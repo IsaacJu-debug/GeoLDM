@@ -28,9 +28,11 @@ parser.add_argument('--modelsummary_dir', type=str, help='', default='./model_de
 
 # Latent Diffusion args
 parser.add_argument('--train_diffusion', action='store_true', 
-                    help='Train second stage LatentDiffusionModel model')
+                    help='Train second stage LatentDiffusionModel model'
+                    
 parser.add_argument('--ae_path', type=str, default=None,
                     help='Specify first stage model path')
+
 parser.add_argument('--trainable_ae', action='store_true',
                     help='Train first stage AutoEncoder model')
 
