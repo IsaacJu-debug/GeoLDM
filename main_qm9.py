@@ -23,6 +23,9 @@ from train_test import train_epoch, test, analyze_and_save
 parser = argparse.ArgumentParser(description='E3Diffusion')
 parser.add_argument('--exp_name', type=str, default='debug_10')
 
+# directories-related
+parser.add_argument('--modelsummary_dir', type=str, help='', default='./model_details/')
+
 # Latent Diffusion args
 parser.add_argument('--train_diffusion', action='store_true', 
                     help='Train second stage LatentDiffusionModel model')
@@ -206,6 +209,7 @@ if args.train_diffusion:
     model, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
 else:
     model, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
+    utils.gnn_model_summary(model, args)
 
 if prop_dist is not None:
     prop_dist.set_normalizer(property_norms)
