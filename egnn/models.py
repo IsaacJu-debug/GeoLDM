@@ -193,8 +193,8 @@ class EGNN_encoder_QM9(nn.Module):
 
     def _forward(self, xh, node_mask, edge_mask, context):      
         bs, n_nodes, dims = xh.shape
-        print('Encoder Input: xh shape {}'.format(xh.shape))
-        print('Encoder Input: bs, n_nodes, dims shape {} {} {}'.format(bs.shape, n_nodes.shape, dims.shape ))
+        #print('Encoder Input: xh shape {}'.format(xh.shape))
+        #print('Encoder Input: bs, n_nodes, dims shape {} {} {}'.format(bs.shape, n_nodes.shape, dims.shape ))
 
         h_dims = dims - self.n_dims
         edges = self.get_adj_matrix(n_nodes, bs, self.device)
@@ -262,7 +262,7 @@ class EGNN_encoder_QM9(nn.Module):
         # h_std will be masked
 
         # For sampling: both stds will be masked in reparameterization
-        print('Encoder Output: vel_mean, vel_std, h_mean, h_std shape {} {} {} {}'.format(vel_mean.shape, vel_std.shape, h_mean.shape, h_std.shape))
+        #print('Encoder Output: vel_mean, vel_std, h_mean, h_std shape {} {} {} {}'.format(vel_mean.shape, vel_std.shape, h_mean.shape, h_std.shape))
 
         return vel_mean, vel_std, h_mean, h_std
     
@@ -338,8 +338,8 @@ class EGNN_decoder_QM9(nn.Module):
 
     def _forward(self, xh, node_mask, edge_mask, context):
         bs, n_nodes, dims = xh.shape
-        print('Decoder Input: xh shape {}'.format(xh.shape))
-        print('Decoder Input: bs, n_nodes, dims shape {} {} {}'.format(bs.shape, n_nodes.shape, dims.shape ))
+        #print('Decoder Input: xh shape {}'.format(xh.shape))
+        #print('Decoder Input: bs, n_nodes, dims shape {} {} {}'.format(bs.shape, n_nodes.shape, dims.shape ))
 
         h_dims = dims - self.n_dims
         edges = self.get_adj_matrix(n_nodes, bs, self.device)
@@ -384,7 +384,7 @@ class EGNN_decoder_QM9(nn.Module):
         if node_mask is not None:
             h_final = h_final * node_mask
         h_final = h_final.view(bs, n_nodes, -1)
-        print('Decoder Output: vel, h_final shape {} {}'.format(vel.shape, h_final.shape))
+        #print('Decoder Output: vel, h_final shape {} {}'.format(vel.shape, h_final.shape))
         return vel, h_final
     
     def get_adj_matrix(self, n_nodes, batch_size, device):
