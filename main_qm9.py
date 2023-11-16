@@ -42,7 +42,7 @@ parser.add_argument('--kl_weight', type=float, default=0.01,
 
 parser.add_argument('--model', type=str, default='egnn_dynamics',
                     help='our_dynamics | schnet | simple_dynamics | '
-                         'kernel_dynamics | egnn_dynamics |gnn_dynamics')
+                         'kernel_dynamics | egnn_dynamics | gnn_dynamics | clof_net_dynamics |')
 parser.add_argument('--probabilistic_model', type=str, default='diffusion',
                     help='diffusion')
 
@@ -182,8 +182,9 @@ if args.no_wandb:
     mode = 'disabled'
 else:
     mode = 'online' if args.online else 'offline'
-kwargs = {'entity': args.wandb_usr, 'name': args.exp_name, 'project': 'e3_diffusion_qm9', 'config': args,
-          'settings': wandb.Settings(_disable_stats=True), 'reinit': True, 'mode': mode}
+kwargs = {'entity': args.wandb_usr, 'name': args.exp_name + '_' + args.dataset + '_' + args.model,
+          'project': 'e3_diffusion_qm9', 'config': args,
+          'settings': wandb.Settings(_disable_stats=False), 'reinit': True, 'mode': mode}
 wandb.init(**kwargs)
 wandb.save('*.txt')
 

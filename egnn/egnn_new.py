@@ -148,29 +148,50 @@ class EquivariantBlock(nn.Module):
         return h, x
 
 
-class Clof_GCL(GCL):
+class Clof_GCL(nn.Module):
     """
     Basic message passing module of ClofNet.
     """
     def __init__(self, input_nf, output_nf, hidden_nf, edges_in_d=0, nodes_att_dim=0, act_fn=nn.ReLU(), 
-                 recurrent=True, coords_weight=1.0, attention=False, norm_diff=False, tanh=False):
-        GCL.__init__(self, input_nf, output_nf, hidden_nf, edges_in_d=edges_in_d, nodes_att_dim=nodes_att_dim, act_fn=act_fn, 
-                     recurrent=recurrent, coords_weight=coords_weight, attention=attention, norm_diff=norm_diff, tanh=tanh, out_basis_dim=3)
-        self.norm_diff = norm_diff
-        self.coord_mlp_vel = nn.Sequential(
-            nn.Linear(input_nf, hidden_nf),
-            act_fn,
-            nn.Linear(hidden_nf, 1))
+                 recurrent=True, coords_weight=1.0, attention=False, norm_diff=False, tanh=False,
+                 coords_range=1, norm_constant=0, out_basis_dim=3):
+        super(Clof_GCL, self).__init__()
 
+        input_edge = input_nf * 2
+        self.attention = attention
+        self.norm_diff = norm_diff
+        self.tanh = tanh
+        edge_coords_nf = 1
+        
         self.edge_mlp = nn.Sequential(
-            nn.Linear(input_nf * 2 + 1 + edges_in_d, hidden_nf),
-            act_fn,
-            nn.Linear(hidden_nf, hidden_nf),
+            nn.Linear(input_edge + edge_coords_nf + edges_in_d, hidden_nf),
             act_fn,
             nn.Linear(hidden_nf, hidden_nf),
             act_fn)
-        self.layer_norm = nn.LayerNorm(hidden_nf)
 
+        self.node_mlp = nn.Sequential(
+            nn.Linear(hidden_nf + input_nf + nodes_att_dim, hidden_nf),
+            act_fn,
+            nn.Linear(hidden_nf, output_nf))
+
+        layer = nn.Linear(hidden_nf, 1, bias=False)
+        torch.nn.init.xavier_uniform_(layer.weight, gain=0.001)
+
+        coord_mlp = []
+        coord_mlp.append(nn.Linear(hidden_nf, hidden_nf))
+        coord_mlp.append(act_fn)
+        coord_mlp.append(layer)
+        if self.tanh:
+            coord_mlp.append(nn.Tanh())
+            self.coords_range = coords_range
+
+        self.coord_mlp = nn.Sequential(*coord_mlp)
+
+        if self.attention:
+            self.att_mlp = nn.Sequential(
+                nn.Linear(hidden_nf, 1),
+                nn.Sigmoid())
+            
     def coord2localframe(self, edge_index, coord):
         row, col = edge_index
         coord_diff = coord[row] - coord[col]
@@ -196,15 +217,15 @@ class Clof_GCL(GCL):
         coord += agg*self.coords_weight
         return coord
 
-    def forward(self, h, edge_index, coord, vel, edge_attr=None, node_attr=None):
+    def forward(self, h, edge_index, coord, edge_attr=None, node_attr=None):
+        # remove velocity as input
         row, col = edge_index
         residue = h
         # h = self.layer_norm(h)
         radial, coord_diff, coord_cross, coord_vertical = self.coord2localframe(edge_index, coord)
         edge_feat = self.edge_model(h[row], h[col], radial, edge_attr)
         coord = self.coord_model(coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat)
-
-        coord += self.coord_mlp_vel(h) * vel
+        #coord += self.coord_mlp_vel(h) * vel
         h, agg = self.node_model(h, edge_index, edge_feat, node_attr)
         h = residue + h
         h = self.layer_norm(h)
@@ -261,14 +282,20 @@ class EGNN(nn.Module):
         return h, x
 
 class ClofNet(nn.Module):
-    def __init__(self, in_node_nf, in_edge_nf, hidden_nf, device='cpu', act_fn=nn.SiLU(), n_layers=4,
-        coords_weight=1.0, recurrent=True, norm_diff=True, tanh=False,
+    def __init__(self, in_node_nf, in_edge_nf, hidden_nf, out_node_nf=None, device='cpu', 
+                 act_fn=nn.SiLU(), n_layers=4, attention=False, norm_constant=1,
+                 coords_weight=1.0, recurrent=False, norm_diff=True, tanh=False,
     ):
         super(ClofNet, self).__init__()
         self.hidden_nf = hidden_nf
         self.device = device
         self.n_layers = n_layers
-        self.embedding_node = nn.Linear(in_node_nf, self.hidden_nf)
+        if out_node_nf is None:
+            out_node_nf = in_node_nf
+
+        self.embedding_node_in = nn.Linear(in_node_nf, self.hidden_nf)
+        self.embedding_node_out = nn.Linear(self.hidden_nf, out_node_nf)
+
         self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
 
         edge_embed_dim = 10
@@ -335,7 +362,8 @@ class ClofNet(nn.Module):
         coff_feat = torch.cat([pesudo_angle, coff_i, coff_j], dim=-1)
         return coff_feat
 
-    def forward(self, h, x, edges, vel, edge_attr, node_attr=None, n_nodes=5):
+    def forward(self, h, x, edges, edge_attr, node_attr=None, n_nodes=5):
+        # Edit Emiel: Remove velocity as input
         h = self.embedding_node(h)
         x = x.reshape(-1, n_nodes, 3)
         centroid = torch.mean(x, dim=1, keepdim=True)
@@ -346,12 +374,12 @@ class ClofNet(nn.Module):
 
         for i in range(0, self.n_layers):
             h, x_center, _ = self._modules["clof_gcl_%d" % i](
-                h, edges, x_center, vel, edge_attr=edge_feat, node_attr=node_attr)
+                h, edges, x_center, edge_attr=edge_feat, node_attr=node_attr)
 
         x = x_center.reshape(-1, n_nodes, 3) + centroid
         x = x.reshape(-1, 3)
+        h = self.embedding_node_out(h)
         return x, h
-
 
 class GNN(nn.Module):
     def __init__(self, in_node_nf, in_edge_nf, hidden_nf, aggregation_method='sum', device='cpu',
@@ -386,14 +414,6 @@ class GNN(nn.Module):
         if node_mask is not None:
             h = h * node_mask
         return h
-
-
-
-
-
-
-
-
 
 class SinusoidsEmbeddingNew(nn.Module):
     def __init__(self, max_res=15., min_res=15. / 2000., div_factor=4):

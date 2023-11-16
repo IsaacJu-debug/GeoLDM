@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from egnn.egnn_new import EGNN, GNN
+from egnn.egnn_new import EGNN, GNN, ClofNet
 from equivariant_diffusion.utils import remove_mean, remove_mean_with_mask
 import numpy as np
 
@@ -15,6 +15,15 @@ class EGNN_dynamics_QM9(nn.Module):
         self.mode = mode
         if mode == 'egnn_dynamics':
             self.egnn = EGNN(
+                in_node_nf=in_node_nf + context_node_nf, in_edge_nf=1,
+                hidden_nf=hidden_nf, device=device, act_fn=act_fn,
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
+                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
+                normalization_factor=normalization_factor,
+                aggregation_method=aggregation_method)
+            self.in_node_nf = in_node_nf
+        elif mode == 'clof_net_dynamics':
+            self.clof_net = ClofNet(
                 in_node_nf=in_node_nf + context_node_nf, in_edge_nf=1,
                 hidden_nf=hidden_nf, device=device, act_fn=act_fn,
                 n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
@@ -78,12 +87,14 @@ class EGNN_dynamics_QM9(nn.Module):
         if self.mode == 'egnn_dynamics':
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
             vel = (x_final - x) * node_mask  # This masking operation is redundant but just in case
+        elif self.mode == 'clof_net_dynamics':
+            h_final, x_final = self.clof_net(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
+            vel = (x_final - x) * node_mask
         elif self.mode == 'gnn_dynamics':
             xh = torch.cat([x, h], dim=1)
             output = self.gnn(xh, edges, node_mask=node_mask)
             vel = output[:, 0:3] * node_mask
             h_final = output[:, 3:]
-
         else:
             raise Exception("Wrong mode %s" % self.mode)
 
@@ -158,6 +169,15 @@ class EGNN_encoder_QM9(nn.Module):
                 normalization_factor=normalization_factor,
                 aggregation_method=aggregation_method)
             self.in_node_nf = in_node_nf
+        elif mode == 'clof_net_dynamics':
+            self.clof_net = ClofNet(
+                in_node_nf=in_node_nf + context_node_nf, out_node_nf=hidden_nf, 
+                in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
+                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
+                normalization_factor=normalization_factor,
+                aggregation_method=aggregation_method)
+            self.in_node_nf = in_node_nf
         elif mode == 'gnn_dynamics':
             self.gnn = GNN(
                 in_node_nf=in_node_nf + context_node_nf + 3, out_node_nf=hidden_nf + 3, 
@@ -215,6 +235,9 @@ class EGNN_encoder_QM9(nn.Module):
         if self.mode == 'egnn_dynamics':
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
             vel = x_final * node_mask  # This masking operation is redundant but just in case
+        elif self.mode == 'clof_net_dynamics':
+            h_final, x_final = self.clof_net(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
+            vel = x_final * node_mask
         elif self.mode == 'gnn_dynamics':
             xh = torch.cat([x, h], dim=1)
             output = self.gnn(xh, edges, node_mask=node_mask)
@@ -261,7 +284,7 @@ class EGNN_encoder_QM9(nn.Module):
         # h_std will be masked
 
         # For sampling: both stds will be masked in reparameterization
-        print('Encoder Output: vel_mean, vel_std, h_mean, h_std shape {} {} {} {}'.format(vel_mean.shape, vel_std.shape, h_mean.shape, h_std.shape))
+        #print('Encoder Output: vel_mean, vel_std, h_mean, h_std shape {} {} {} {}'.format(vel_mean.shape, vel_std.shape, h_mean.shape, h_std.shape))
 
         return vel_mean, vel_std, h_mean, h_std
     
@@ -303,6 +326,15 @@ class EGNN_decoder_QM9(nn.Module):
         if mode == 'egnn_dynamics':
             self.egnn = EGNN(
                 in_node_nf=in_node_nf + context_node_nf, out_node_nf=out_node_nf, 
+                in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
+                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
+                normalization_factor=normalization_factor,
+                aggregation_method=aggregation_method)
+            self.in_node_nf = in_node_nf
+        elif mode == 'clof_net_dynamics':
+            self.clof_net = ClofNet(
+                in_node_nf=in_node_nf + context_node_nf, out_node_nf=out_node_nf,
                 in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
                 n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
                 inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
@@ -359,6 +391,9 @@ class EGNN_decoder_QM9(nn.Module):
         if self.mode == 'egnn_dynamics':
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
             vel = x_final * node_mask  # This masking operation is redundant but just in case
+        elif self.mode == 'clof_net_dynamics':
+            h_final, x_final = self.clof_net(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
+            vel = x_final * node_mask
         elif self.mode == 'gnn_dynamics':
             xh = torch.cat([x, h], dim=1)
             output = self.gnn(xh, edges, node_mask=node_mask)
@@ -382,7 +417,7 @@ class EGNN_decoder_QM9(nn.Module):
         if node_mask is not None:
             h_final = h_final * node_mask
         h_final = h_final.view(bs, n_nodes, -1)
-        print('Decoder Output: vel, h_final shape {} {}'.format(vel.shape, h_final.shape))
+        #print('Decoder Output: vel, h_final shape {} {}'.format(vel.shape, h_final.shape))
         return vel, h_final
     
     def get_adj_matrix(self, n_nodes, batch_size, device):
