@@ -1,7 +1,8 @@
 from torch import nn
 import torch
 import math
-
+import numpy as np
+import logging
 class GCL(nn.Module):
     def __init__(self, input_nf, output_nf, hidden_nf, normalization_factor, aggregation_method,
                  edges_in_d=0, nodes_att_dim=0, act_fn=nn.SiLU(), attention=False):
@@ -147,6 +148,69 @@ class EquivariantBlock(nn.Module):
         return h, x
 
 
+class Clof_GCL(GCL):
+    """
+    Basic message passing module of ClofNet.
+    """
+    def __init__(self, input_nf, output_nf, hidden_nf, edges_in_d=0, nodes_att_dim=0, act_fn=nn.ReLU(), 
+                 recurrent=True, coords_weight=1.0, attention=False, norm_diff=False, tanh=False):
+        GCL.__init__(self, input_nf, output_nf, hidden_nf, edges_in_d=edges_in_d, nodes_att_dim=nodes_att_dim, act_fn=act_fn, 
+                     recurrent=recurrent, coords_weight=coords_weight, attention=attention, norm_diff=norm_diff, tanh=tanh, out_basis_dim=3)
+        self.norm_diff = norm_diff
+        self.coord_mlp_vel = nn.Sequential(
+            nn.Linear(input_nf, hidden_nf),
+            act_fn,
+            nn.Linear(hidden_nf, 1))
+
+        self.edge_mlp = nn.Sequential(
+            nn.Linear(input_nf * 2 + 1 + edges_in_d, hidden_nf),
+            act_fn,
+            nn.Linear(hidden_nf, hidden_nf),
+            act_fn,
+            nn.Linear(hidden_nf, hidden_nf),
+            act_fn)
+        self.layer_norm = nn.LayerNorm(hidden_nf)
+
+    def coord2localframe(self, edge_index, coord):
+        row, col = edge_index
+        coord_diff = coord[row] - coord[col]
+        radial = torch.sum((coord_diff)**2, 1).unsqueeze(1)
+        coord_cross = torch.cross(coord[row], coord[col])
+        if self.norm_diff:
+            norm = torch.sqrt(radial) + 1
+            coord_diff = coord_diff / norm
+            cross_norm = (
+                torch.sqrt(torch.sum((coord_cross)**2, 1).unsqueeze(1))) + 1
+            coord_cross = coord_cross / cross_norm
+
+        coord_vertical = torch.cross(coord_diff, coord_cross)
+
+        return radial, coord_diff, coord_cross, coord_vertical
+
+    def coord_model(self, coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat):
+        row, col = edge_index
+        coff = self.coord_mlp(edge_feat)
+        trans = coord_diff * coff[:, :1] + coord_cross * coff[:, 1:2] + coord_vertical * coff[:, 2:3]
+        trans = torch.clamp(trans, min=-100, max=100) #This is never activated but just in case it case it explosed it may save the train
+        agg = unsorted_segment_mean(trans, row, num_segments=coord.size(0))
+        coord += agg*self.coords_weight
+        return coord
+
+    def forward(self, h, edge_index, coord, vel, edge_attr=None, node_attr=None):
+        row, col = edge_index
+        residue = h
+        # h = self.layer_norm(h)
+        radial, coord_diff, coord_cross, coord_vertical = self.coord2localframe(edge_index, coord)
+        edge_feat = self.edge_model(h[row], h[col], radial, edge_attr)
+        coord = self.coord_model(coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat)
+
+        coord += self.coord_mlp_vel(h) * vel
+        h, agg = self.node_model(h, edge_index, edge_feat, node_attr)
+        h = residue + h
+        h = self.layer_norm(h)
+        return h, coord, edge_attr
+
+
 class EGNN(nn.Module):
     def __init__(self, in_node_nf, in_edge_nf, hidden_nf, device='cpu', act_fn=nn.SiLU(), n_layers=3, attention=False,
                  norm_diff=True, out_node_nf=None, tanh=False, coords_range=15, norm_constant=1, inv_sublayers=2,
@@ -196,6 +260,98 @@ class EGNN(nn.Module):
             h = h * node_mask
         return h, x
 
+class ClofNet(nn.Module):
+    def __init__(self, in_node_nf, in_edge_nf, hidden_nf, device='cpu', act_fn=nn.SiLU(), n_layers=4,
+        coords_weight=1.0, recurrent=True, norm_diff=True, tanh=False,
+    ):
+        super(ClofNet, self).__init__()
+        self.hidden_nf = hidden_nf
+        self.device = device
+        self.n_layers = n_layers
+        self.embedding_node = nn.Linear(in_node_nf, self.hidden_nf)
+        self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
+
+        edge_embed_dim = 10
+        self.fuse_edge = nn.Sequential(
+            nn.Linear(edge_embed_dim, self.hidden_nf // 2), act_fn,
+            nn.Linear(self.hidden_nf // 2, self.hidden_nf // 2), act_fn)
+
+        self.norm_diff = norm_diff
+        for i in range(0, self.n_layers):
+            self.add_module(
+                "clof_gcl_%d" % i,
+                Clof_GCL(
+                    input_nf=self.hidden_nf,
+                    output_nf=self.hidden_nf,
+                    hidden_nf=self.hidden_nf,
+                    edges_in_d=self.hidden_nf // 2,
+                    act_fn=act_fn,
+                    recurrent=recurrent,
+                    coords_weight=coords_weight,
+                    norm_diff=norm_diff,
+                    tanh=tanh,
+                ),
+            )
+        self.to(self.device)
+        self.params = self.__str__()
+
+    def __str__(self):
+        model_parameters = filter(lambda p: p.requires_grad, self.parameters())
+        params = sum([np.prod(p.size()) for p in model_parameters])
+        print('Network Size', params)
+        logging.info('Network Size {}'.format(params))
+        return str(params)
+
+    def coord2localframe(self, edge_index, coord):
+        row, col = edge_index
+        coord_diff = coord[row] - coord[col]
+        radial = torch.sum((coord_diff)**2, 1).unsqueeze(1)
+        coord_cross = torch.cross(coord[row], coord[col])
+        if self.norm_diff:
+            norm = torch.sqrt(radial) + 1
+            coord_diff = coord_diff / norm
+            cross_norm = (torch.sqrt(
+                torch.sum((coord_cross)**2, 1).unsqueeze(1))) + 1
+            coord_cross = coord_cross / cross_norm
+        coord_vertical = torch.cross(coord_diff, coord_cross)
+        return coord_diff.unsqueeze(1), coord_cross.unsqueeze(1), coord_vertical.unsqueeze(1)
+
+    def scalarization(self, edges, x):
+        coord_diff, coord_cross, coord_vertical = self.coord2localframe(edges, x)
+        # Geometric Vectors Scalarization
+        row, col = edges
+        edge_basis = torch.cat([coord_diff, coord_cross, coord_vertical], dim=1) 
+        r_i = x[row]  
+        r_j = x[col]
+        coff_i = torch.matmul(edge_basis, r_i.unsqueeze(-1)).squeeze(-1)  
+        coff_j = torch.matmul(edge_basis, r_j.unsqueeze(-1)).squeeze(-1)  
+        # Calculate angle information in local frames
+        coff_mul = coff_i * coff_j  # [E, 3]
+        coff_i_norm = coff_i.norm(dim=-1, keepdim=True) + 1e-5
+        coff_j_norm = coff_j.norm(dim=-1, keepdim=True) + 1e-5
+        pesudo_cos = coff_mul.sum(dim=-1, keepdim=True) / coff_i_norm / coff_j_norm
+        pesudo_sin = torch.sqrt(1 - pesudo_cos**2)
+        pesudo_angle = torch.cat([pesudo_sin, pesudo_cos], dim=-1)
+        coff_feat = torch.cat([pesudo_angle, coff_i, coff_j], dim=-1)
+        return coff_feat
+
+    def forward(self, h, x, edges, vel, edge_attr, node_attr=None, n_nodes=5):
+        h = self.embedding_node(h)
+        x = x.reshape(-1, n_nodes, 3)
+        centroid = torch.mean(x, dim=1, keepdim=True)
+        x_center = (x - centroid).reshape(-1, 3)
+        coff_feat = self.scalarization(edges, x_center)
+        edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
+        edge_feat = self.fuse_edge(edge_feat)
+
+        for i in range(0, self.n_layers):
+            h, x_center, _ = self._modules["clof_gcl_%d" % i](
+                h, edges, x_center, vel, edge_attr=edge_feat, node_attr=node_attr)
+
+        x = x_center.reshape(-1, n_nodes, 3) + centroid
+        x = x.reshape(-1, 3)
+        return x, h
+
 
 class GNN(nn.Module):
     def __init__(self, in_node_nf, in_edge_nf, hidden_nf, aggregation_method='sum', device='cpu',
@@ -230,6 +386,13 @@ class GNN(nn.Module):
         if node_mask is not None:
             h = h * node_mask
         return h
+
+
+
+
+
+
+
 
 
 class SinusoidsEmbeddingNew(nn.Module):
@@ -272,3 +435,12 @@ def unsorted_segment_sum(data, segment_ids, num_segments, normalization_factor, 
         norm[norm == 0] = 1
         result = result / norm
     return result
+
+def unsorted_segment_mean(data, segment_ids, num_segments):
+    result_shape = (num_segments, data.size(1))
+    segment_ids = segment_ids.unsqueeze(-1).expand(-1, data.size(1))
+    result = data.new_full(result_shape, 0)  # Init empty result tensor.
+    count = data.new_full(result_shape, 0)
+    result.scatter_add_(0, segment_ids, data)
+    count.scatter_add_(0, segment_ids, torch.ones_like(data))
+    return result / count.clamp(min=1)
