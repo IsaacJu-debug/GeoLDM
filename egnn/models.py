@@ -213,7 +213,7 @@ class EGNN_encoder_QM9(nn.Module):
 
     def _forward(self, xh, node_mask, edge_mask, context):      
         bs, n_nodes, dims = xh.shape # batch_size, n_nodes, dims (contain coordinates and charges)
-        print('Encoder Input: xh shape {}'.format(xh.shape))
+        #print('Encoder Input: xh shape {}'.format(xh.shape))
 
         h_dims = dims - self.n_dims
         edges = self.get_adj_matrix(n_nodes, bs, self.device)
@@ -369,7 +369,7 @@ class EGNN_decoder_QM9(nn.Module):
 
     def _forward(self, xh, node_mask, edge_mask, context):
         bs, n_nodes, dims = xh.shape
-        print('Decoder Input: xh shape {}'.format(xh.shape))
+        #print('Decoder Input: xh shape {}'.format(xh.shape))
 
         h_dims = dims - self.n_dims
         edges = self.get_adj_matrix(n_nodes, bs, self.device)
