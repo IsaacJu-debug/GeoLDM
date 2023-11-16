@@ -207,8 +207,11 @@ args.context_node_nf = context_node_nf
 # Create Latent Diffusion Model or Audoencoder
 if args.train_diffusion:
     model, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
+    print('saving diffusion model details...')
+    utils.gnn_model_summary(model, args)
 else:
     model, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
+    print('saving diffusion model details...')
     utils.gnn_model_summary(model, args)
 
 if prop_dist is not None:
