@@ -152,7 +152,7 @@ if __name__ == "__main__":
     x = random_rotation(x)
     #print(x)
 
-def gnn_model_summary(model, args ):
+def gnn_model_summary(model, args):
     """
 
     """
@@ -161,7 +161,7 @@ def gnn_model_summary(model, args ):
     if not os.path.isdir( args.modelsummary_dir ):
         os.mkdir(args.modelsummary_dir)
 
-    with open( os.path.join(args.modelsummary_dir, args.exp_name + '.txt'), 'w') as summary:
+    with open( os.path.join(args.modelsummary_dir, args.exp_name + '_' + args.model + '.txt'), 'w') as summary:
     # Record model details
         summary.write("----------------------------------------------------------------\n")
         line_new = "{:>20}  {:>25} {:>15}\n".format("Layer.Parameter", "Param Tensor Shape", "Param #")
