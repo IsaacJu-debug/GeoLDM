@@ -3,7 +3,7 @@ import torch
 import math
 import numpy as np
 import logging
-import pdb
+#import pdb
 
 class GCL(nn.Module):
     def __init__(self, input_nf, output_nf, hidden_nf, normalization_factor, aggregation_method,
@@ -170,7 +170,7 @@ class Clof_GCL(nn.Module):
         self.tanh = tanh
         edge_coords_nf = 1
         
-        #pdb.set_trace()
+        ##pdb.set_trace()
         self.edge_mlp = nn.Sequential(
             nn.Linear(input_edge + edge_coords_nf + edges_in_d, hidden_nf),
             act_fn,
@@ -202,7 +202,7 @@ class Clof_GCL(nn.Module):
                 nn.Sigmoid())
     
     def edge_model(self, source, target, radial, edge_attr):
-        pdb.set_trace()
+        #pdb.set_trace()
         if edge_attr is None:  # Unused.
             out = torch.cat([source, target, radial], dim=1)
         else:
@@ -247,7 +247,7 @@ class Clof_GCL(nn.Module):
     def coord_model(self, coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat):
         row, col = edge_index
         coff = self.coord_mlp(edge_feat)
-        pdb.set_trace()
+        #pdb.set_trace()
         trans = coord_diff * coff[:, :1] + coord_cross * coff[:, 1:2] + coord_vertical * coff[:, 2:3]
         trans = torch.clamp(trans, min=-100, max=100) #This is never activated but just in case it case it explosed it may save the train
         agg = unsorted_segment_mean(trans, row, num_segments=coord.size(0))
@@ -260,7 +260,7 @@ class Clof_GCL(nn.Module):
         residue = h
         # h = self.layer_norm(h)
         radial, coord_diff, coord_cross, coord_vertical = self.coord2localframe(edge_index, coord)
-        pdb.set_trace()
+        #pdb.set_trace()
         edge_feat = self.edge_model(h[row], h[col], radial, edge_attr)
         coord = self.coord_model(coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat)
         #coord += self.coord_mlp_vel(h) * vel
@@ -412,7 +412,7 @@ class ClofNet(nn.Module):
             edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
         else:
             edge_feat = coff_feat
-        pdb.set_trace()
+        ##pdb.set_trace()
         edge_feat = self.fuse_edge(edge_feat)
 
         for i in range(0, self.n_layers):
