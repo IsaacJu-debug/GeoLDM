@@ -253,9 +253,9 @@ def main():
         copied_state_dict = copy.deepcopy(model_state_dict)
         
         if args.train_diffusion:
-            new_model, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
+            model_ema, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
         else:
-            new_model, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
+            model_ema, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
 
         model_ema.load_state_dict(copied_state_dict)
         #model_ema = copy.deepcopy(model)
