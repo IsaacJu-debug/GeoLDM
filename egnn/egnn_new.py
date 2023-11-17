@@ -326,7 +326,7 @@ class ClofNet(nn.Module):
 
         self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
 
-        edge_embed_dim = 10
+        edge_embed_dim = 8 + in_edge_nf
         
         self.fuse_edge = nn.Sequential(
             nn.Linear(edge_embed_dim, self.hidden_nf // 2), act_fn,

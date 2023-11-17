@@ -169,7 +169,7 @@ class EGNN_encoder_QM9(nn.Module):
         elif mode == 'clof_net_dynamics':
             self.clof_net = ClofNet(
                 in_node_nf=in_node_nf + context_node_nf, out_node_nf=hidden_nf, 
-                in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
+                in_edge_nf=0, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
                 n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant)
             self.in_node_nf = in_node_nf
         elif mode == 'gnn_dynamics':
