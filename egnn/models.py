@@ -26,10 +26,7 @@ class EGNN_dynamics_QM9(nn.Module):
             self.clof_net = ClofNet(
                 in_node_nf=in_node_nf + context_node_nf, in_edge_nf=1,
                 hidden_nf=hidden_nf, device=device, act_fn=act_fn,
-                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
-                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
-                normalization_factor=normalization_factor,
-                aggregation_method=aggregation_method)
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant)
             self.in_node_nf = in_node_nf
         elif mode == 'gnn_dynamics':
             self.gnn = GNN(
@@ -173,10 +170,7 @@ class EGNN_encoder_QM9(nn.Module):
             self.clof_net = ClofNet(
                 in_node_nf=in_node_nf + context_node_nf, out_node_nf=hidden_nf, 
                 in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
-                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
-                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
-                normalization_factor=normalization_factor,
-                aggregation_method=aggregation_method)
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant)
             self.in_node_nf = in_node_nf
         elif mode == 'gnn_dynamics':
             self.gnn = GNN(
@@ -333,13 +327,11 @@ class EGNN_decoder_QM9(nn.Module):
                 aggregation_method=aggregation_method)
             self.in_node_nf = in_node_nf
         elif mode == 'clof_net_dynamics':
+            # clof_net uses mean aggregation method
             self.clof_net = ClofNet(
                 in_node_nf=in_node_nf + context_node_nf, out_node_nf=out_node_nf,
                 in_edge_nf=1, hidden_nf=hidden_nf, device=device, act_fn=act_fn,
-                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant,
-                inv_sublayers=inv_sublayers, sin_embedding=sin_embedding,
-                normalization_factor=normalization_factor,
-                aggregation_method=aggregation_method)
+                n_layers=n_layers, attention=attention, tanh=tanh, norm_constant=norm_constant)
             self.in_node_nf = in_node_nf
         elif mode == 'gnn_dynamics':
             self.gnn = GNN(
