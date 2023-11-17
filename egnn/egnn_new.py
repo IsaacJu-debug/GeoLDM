@@ -163,7 +163,7 @@ class Clof_GCL(nn.Module):
         input_edge = input_nf * 2
         self.normalization_factor = normalization_factor
         self.aggregation_method = aggregation_method
-
+        self.recurrent = recurrent
         self.coords_weight = coords_weight
         self.attention = attention
         self.norm_diff = norm_diff
