@@ -233,16 +233,25 @@ class Clof_GCL(nn.Module):
         coord_diff = coord[row] - coord[col]
         radial = torch.sum((coord_diff)**2, 1).unsqueeze(1)
         coord_cross = torch.cross(coord[row], coord[col])
-        if self.norm_diff:
-            if torch.isnan(radial).any() or torch.isinf(radial).any() or (radial <= 1e-8).any():
-                pdb.set_trace()
 
+        # Epsilon to prevent NaN in case radial is zero or very close to zero
+        epsilon = 1e-8
+
+        if self.norm_diff:
+
+            # Adding epsilon inside the square root to ensure non-negativity
+            norm = torch.sqrt(radial + epsilon) + 1
+            coord_diff = coord_diff / norm
+            cross_norm = (torch.sqrt(torch.sum((coord_cross)**2, 1).unsqueeze(1) + epsilon)) + 1
+            coord_cross = coord_cross / cross_norm
+
+            '''
             norm = torch.sqrt(radial) + 1
             coord_diff = coord_diff / norm
             cross_norm = (
                 torch.sqrt(torch.sum((coord_cross)**2, 1).unsqueeze(1))) + 1
             coord_cross = coord_cross / cross_norm
-
+            '''
         coord_vertical = torch.cross(coord_diff, coord_cross)
 
         return radial, coord_diff, coord_cross, coord_vertical
