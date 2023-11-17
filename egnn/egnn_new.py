@@ -239,6 +239,7 @@ class Clof_GCL(nn.Module):
     def coord_model(self, coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat):
         row, col = edge_index
         coff = self.coord_mlp(edge_feat)
+        pdb.set_trace()
         trans = coord_diff * coff[:, :1] + coord_cross * coff[:, 1:2] + coord_vertical * coff[:, 2:3]
         trans = torch.clamp(trans, min=-100, max=100) #This is never activated but just in case it case it explosed it may save the train
         agg = unsorted_segment_mean(trans, row, num_segments=coord.size(0))
