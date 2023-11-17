@@ -230,7 +230,7 @@ class EGNN_encoder_QM9(nn.Module):
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
             vel = x_final * node_mask  # This masking operation is redundant but just in case
         elif self.mode == 'clof_net_dynamics':
-            h_final, x_final = self.clof_net(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
+            h_final, x_final = self.clof_net(h, x, edges, n_nodes = n_nodes, node_mask=node_mask, edge_mask=edge_mask)
             vel = x_final * node_mask
         elif self.mode == 'gnn_dynamics':
             xh = torch.cat([x, h], dim=1)
