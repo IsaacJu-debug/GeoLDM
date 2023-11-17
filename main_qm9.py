@@ -248,7 +248,17 @@ def main():
 
     # Initialize model copy for exponential moving average of params.
     if args.ema_decay > 0:
-        model_ema = copy.deepcopy(model)
+        
+        model_state_dict = model.state_dict()
+        copied_state_dict = copy.deepcopy(model_state_dict)
+        
+        if args.train_diffusion:
+            new_model, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
+        else:
+            new_model, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
+
+        model_ema.load_state_dict(copied_state_dict)
+        #model_ema = copy.deepcopy(model)
         ema = flow_utils.EMA(args.ema_decay)
 
         if args.dp and torch.cuda.device_count() > 1:
