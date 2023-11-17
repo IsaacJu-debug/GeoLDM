@@ -315,6 +315,7 @@ class ClofNet(nn.Module):
                  act_fn=nn.SiLU(), n_layers=4, attention=False, norm_constant=1,
                  coords_weight=1.0, recurrent=False, norm_diff=True, tanh=False,
     ):
+        # in_edge_nf is the dimension of the edge feature, which has not been used in this work
         super(ClofNet, self).__init__()
         self.hidden_nf = hidden_nf
         self.device = device
@@ -328,7 +329,6 @@ class ClofNet(nn.Module):
         #self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
 
         edge_embed_dim = 8
-        
         self.fuse_edge = nn.Sequential(
             nn.Linear(edge_embed_dim, self.hidden_nf // 2), act_fn,
             nn.Linear(self.hidden_nf // 2, self.hidden_nf // 2), act_fn)
