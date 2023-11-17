@@ -2,8 +2,9 @@ from torch.utils.data import DataLoader
 from qm9.data.args import init_argparse
 from qm9.data.collate import PreprocessQM9
 from qm9.data.utils import initialize_datasets
+import torch
 import os
-
+import numpy as np
 
 def retrieve_dataloaders(cfg):
     if 'qm9' in cfg.dataset:
@@ -26,6 +27,13 @@ def retrieve_dataloaders(cfg):
         if filter_n_atoms is not None:
             print("Retrieving molecules with only %d atoms" % filter_n_atoms)
             datasets = filter_atoms(datasets, filter_n_atoms)
+
+        # Randomly sample 1/10 of the dataset
+        for split in datasets.keys():
+            dataset_size = len(datasets[split])
+            indices = list(range(dataset_size))
+            subset_indices = np.random.choice(indices, size=dataset_size // args.dataset_portion, replace=False)
+            datasets[split] = torch.utils.data.Subset(datasets[split], subset_indices)
 
         # Construct PyTorch dataloaders from datasets
         preprocess = PreprocessQM9(load_charges=cfg.include_charges)
