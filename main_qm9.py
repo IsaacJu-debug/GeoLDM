@@ -91,6 +91,8 @@ parser.add_argument('--sin_embedding', type=eval, default=False,
 parser.add_argument('--ode_regularization', type=float, default=1e-3)
 parser.add_argument('--dataset', type=str, default='qm9',
                     help='qm9 | qm9_second_half (train only on the last 50K samples of the training dataset)')
+
+parser.add_argument('--dataset_portion', type=float, default=1.0, help='portion of the dataset to use')
                     
 parser.add_argument('--datadir', type=str, default='qm9/temp',
                     help='qm9 directory')

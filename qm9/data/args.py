@@ -51,7 +51,6 @@ def setup_shared_args(parser):
                         help='Shuffle minibatches.')
     parser.add_argument('--seed', type=int, default=1, metavar='N',
                         help='Set random number seed. Set to -1 to set based upon clock.')
-    parser.add_argument('--dataset_portion', type=float, default=1.0, help='portion of the dataset to use')
 
     # Saving and logging options
     parser.add_argument('--save', action=BoolArg, default=True,
