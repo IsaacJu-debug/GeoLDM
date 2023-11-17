@@ -362,9 +362,10 @@ class ClofNet(nn.Module):
         coff_feat = torch.cat([pesudo_angle, coff_i, coff_j], dim=-1)
         return coff_feat
 
-    def forward(self, h, x, edges, edge_attr, node_attr=None, n_nodes=5):
+    def forward(self, h, x, edges, edge_attr=None, node_attr=None, node_mask=None, edge_mask=None):
         # Edit Emiel: Remove velocity as input
         h = self.embedding_node(h)
+        n_nodes = x.shape[1]
         x = x.reshape(-1, n_nodes, 3)
         centroid = torch.mean(x, dim=1, keepdim=True)
         x_center = (x - centroid).reshape(-1, 3)
