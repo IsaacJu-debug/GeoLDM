@@ -251,8 +251,6 @@ def main():
         
         model_state_dict = model.state_dict()
         copied_state_dict = copy.deepcopy(model_state_dict)
-        # Now that you have a deepcopy, move the copied state_dict to the target device
-        copied_state_dict_device = {k: v.to(device) for k, v in copied_state_dict.items()}
 
         if args.train_diffusion:
             model_ema, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
@@ -260,7 +258,8 @@ def main():
             model_ema, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
         
         #print('model_ema device {}'.format(model_ema.device))
-        model_ema.load_state_dict(copied_state_dict_device)
+        model_ema.load_state_dict(copied_state_dict)
+        model_ema.to(device)
         #model_ema = copy.deepcopy(model)
         ema = flow_utils.EMA(args.ema_decay)
 
