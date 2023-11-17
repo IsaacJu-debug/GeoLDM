@@ -156,7 +156,7 @@ class Clof_GCL(nn.Module):
     """
     def __init__(self, input_nf, output_nf, hidden_nf, edges_in_d=0, nodes_att_dim=0, act_fn=nn.ReLU(), 
                  recurrent=True, coords_weight=1.0, attention=False, norm_diff=False, tanh=False,
-                 coords_range=1, norm_constant=0, out_basis_dim=3):
+                 coords_range=1, norm_constant=0, out_basis_dim=3, clamp=False):
         super(Clof_GCL, self).__init__()
 
         input_edge = input_nf * 2
@@ -177,9 +177,10 @@ class Clof_GCL(nn.Module):
             act_fn,
             nn.Linear(hidden_nf, output_nf))
 
-        layer = nn.Linear(hidden_nf, 1, bias=False)
+        layer = nn.Linear(hidden_nf, out_basis_dim, bias=False)
         torch.nn.init.xavier_uniform_(layer.weight, gain=0.001)
 
+        self.clamp = clamp
         coord_mlp = []
         coord_mlp.append(nn.Linear(hidden_nf, hidden_nf))
         coord_mlp.append(act_fn)
