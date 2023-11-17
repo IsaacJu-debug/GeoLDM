@@ -364,7 +364,7 @@ class ClofNet(nn.Module):
 
     def forward(self, h, x, edges, edge_attr=None, node_attr=None, node_mask=None, edge_mask=None):
         # Edit Emiel: Remove velocity as input
-        h = self.embedding_node(h)
+        h = self.embedding_node_in(h)
         n_nodes = x.shape[1]
         x = x.reshape(-1, n_nodes, 3)
         centroid = torch.mean(x, dim=1, keepdim=True)
