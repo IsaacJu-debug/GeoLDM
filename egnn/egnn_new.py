@@ -3,7 +3,7 @@ import torch
 import math
 import numpy as np
 import logging
-#import pdb
+import pdb
 
 class GCL(nn.Module):
     def __init__(self, input_nf, output_nf, hidden_nf, normalization_factor, aggregation_method,
@@ -234,6 +234,9 @@ class Clof_GCL(nn.Module):
         radial = torch.sum((coord_diff)**2, 1).unsqueeze(1)
         coord_cross = torch.cross(coord[row], coord[col])
         if self.norm_diff:
+            if torch.isnan(radial).any() or torch.isinf(radial).any() or (radial <= 1e-8).any():
+                pdb.set_trace()
+
             norm = torch.sqrt(radial) + 1
             coord_diff = coord_diff / norm
             cross_norm = (
