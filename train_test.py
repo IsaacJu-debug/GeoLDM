@@ -56,6 +56,18 @@ def train_epoch(args, loader, epoch, model, model_dp, model_ema, ema, device, dt
         loss = nll + args.ode_regularization * reg_term
         loss.backward()
 
+        # Check for NaN and infinite gradients
+        if args.exp_name[-5:].lower() == "debug":
+            for name, parameter in model.named_parameters():
+                if parameter.requires_grad:  # Only parameters that require gradients
+                    if parameter.grad is not None:  # If gradients are computed
+                        if torch.isnan(parameter.grad).any():  # Check for NaN
+                            print(f'NaN gradient in {name}')
+                        if torch.isinf(parameter.grad).any():  # Check for infinity
+                            print(f'Inf gradient in {name}')
+        else:
+            pass
+
         if args.clip_grad:
             grad_norm = utils.gradient_clipping(model, gradnorm_queue)
         else:
