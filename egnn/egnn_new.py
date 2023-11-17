@@ -181,7 +181,7 @@ class Clof_GCL(nn.Module):
             nn.Linear(hidden_nf + input_nf + nodes_att_dim, hidden_nf),
             act_fn,
             nn.Linear(hidden_nf, output_nf))
-
+        
         self.layer_norm = nn.LayerNorm(hidden_nf)
         layer = nn.Linear(hidden_nf, out_basis_dim, bias=False)
         torch.nn.init.xavier_uniform_(layer.weight, gain=0.001)
@@ -422,7 +422,7 @@ class ClofNet(nn.Module):
         x = x_center.reshape(-1, n_nodes, 3) + centroid
         x = x.reshape(-1, 3)
         h = self.embedding_node_out(h)
-        return x, h
+        return h, x
 
 class GNN(nn.Module):
     def __init__(self, in_node_nf, in_edge_nf, hidden_nf, aggregation_method='sum', device='cpu',
