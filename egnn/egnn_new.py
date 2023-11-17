@@ -401,9 +401,9 @@ class ClofNet(nn.Module):
         coff_feat = self.scalarization(edges, x_center)
         if edge_attr is not None:
             edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
-            edge_feat = self.fuse_edge(edge_feat)
         else:
-            edge_feat = edge_attr
+            edge_feat = coff_feat
+        edge_feat = self.fuse_edge(edge_feat)
 
         for i in range(0, self.n_layers):
             h, x_center, _ = self._modules["clof_gcl_%d" % i](
