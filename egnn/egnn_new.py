@@ -165,7 +165,7 @@ class Clof_GCL(nn.Module):
         self.tanh = tanh
         edge_coords_nf = 1
         
-        pdb.set_trace()
+        #pdb.set_trace()
         self.edge_mlp = nn.Sequential(
             nn.Linear(input_edge + edge_coords_nf + edges_in_d, hidden_nf),
             act_fn,
@@ -403,6 +403,7 @@ class ClofNet(nn.Module):
             edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
         else:
             edge_feat = coff_feat
+        pdb.set_trace()
         edge_feat = self.fuse_edge(edge_feat)
 
         for i in range(0, self.n_layers):
