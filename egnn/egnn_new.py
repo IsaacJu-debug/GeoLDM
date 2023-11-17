@@ -182,6 +182,7 @@ class Clof_GCL(nn.Module):
             act_fn,
             nn.Linear(hidden_nf, output_nf))
 
+        self.layer_norm = nn.LayerNorm(hidden_nf)
         layer = nn.Linear(hidden_nf, out_basis_dim, bias=False)
         torch.nn.init.xavier_uniform_(layer.weight, gain=0.001)
 
