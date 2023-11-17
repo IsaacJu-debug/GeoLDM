@@ -8,6 +8,7 @@ class EMA():
         self.beta = beta
 
     def update_model_average(self, ma_model, current_model):
+        print('ma_model {}, current_model {}'.format(ma_model.device(), current_model.device()))
         for current_params, ma_params in zip(current_model.parameters(), ma_model.parameters()):
             old_weight, up_weight = ma_params.data, current_params.data
             ma_params.data = self.update_average(old_weight, up_weight)
