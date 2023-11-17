@@ -156,10 +156,14 @@ class Clof_GCL(nn.Module):
     """
     def __init__(self, input_nf, output_nf, hidden_nf, edges_in_d=0, nodes_att_dim=0, act_fn=nn.ReLU(), 
                  recurrent=True, coords_weight=1.0, attention=False, norm_diff=False, tanh=False,
-                 coords_range=1, norm_constant=0, out_basis_dim=3, clamp=False):
+                 coords_range=1, norm_constant=0, out_basis_dim=3, clamp=False, 
+                 normalization_factor=1,aggregation_method='sum'):
         super(Clof_GCL, self).__init__()
 
         input_edge = input_nf * 2
+        self.normalization_factor = normalization_factor
+        self.aggregation_method = aggregation_method
+
         self.coords_weight = coords_weight
         self.attention = attention
         self.norm_diff = norm_diff
@@ -211,7 +215,9 @@ class Clof_GCL(nn.Module):
 
     def node_model(self, x, edge_index, edge_attr, node_attr):
         row, col = edge_index
-        agg = unsorted_segment_sum(edge_attr, row, num_segments=x.size(0))
+        agg = unsorted_segment_sum(edge_attr, row, num_segments=x.size(0),
+                                   normalization_factor=self.normalization_factor,
+                                   aggregation_method=self.aggregation_method)
         if node_attr is not None:
             agg = torch.cat([x, agg, node_attr], dim=1)
         else:
