@@ -197,6 +197,7 @@ class Clof_GCL(nn.Module):
             out = torch.cat([source, target, radial], dim=1)
         else:
             out = torch.cat([source, target, radial, edge_attr], dim=1)
+        print('out shape', out.shape)
         out = self.edge_mlp(out)
         if self.attention:
             att_val = self.att_mlp(out)
