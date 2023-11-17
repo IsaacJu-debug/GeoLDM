@@ -186,8 +186,7 @@ class Clof_GCL(nn.Module):
         coord_mlp.append(layer)
         if self.tanh:
             coord_mlp.append(nn.Tanh())
-            self.coords_range = coords_range
-
+            self.coords_range = nn.Parameter(torch.ones(1))*3
         self.coord_mlp = nn.Sequential(*coord_mlp)
 
         if self.attention:
@@ -325,7 +324,7 @@ class ClofNet(nn.Module):
         self.embedding_node_in = nn.Linear(in_node_nf, self.hidden_nf)
         self.embedding_node_out = nn.Linear(self.hidden_nf, out_node_nf)
 
-        self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
+        #self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
 
         edge_embed_dim = 8 + in_edge_nf
         
