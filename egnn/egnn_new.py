@@ -191,7 +191,30 @@ class Clof_GCL(nn.Module):
             self.att_mlp = nn.Sequential(
                 nn.Linear(hidden_nf, 1),
                 nn.Sigmoid())
-            
+    
+    def edge_model(self, source, target, radial, edge_attr):
+        if edge_attr is None:  # Unused.
+            out = torch.cat([source, target, radial], dim=1)
+        else:
+            out = torch.cat([source, target, radial, edge_attr], dim=1)
+        out = self.edge_mlp(out)
+        if self.attention:
+            att_val = self.att_mlp(out)
+            out = out * att_val
+        return out
+
+    def node_model(self, x, edge_index, edge_attr, node_attr):
+        row, col = edge_index
+        agg = unsorted_segment_sum(edge_attr, row, num_segments=x.size(0))
+        if node_attr is not None:
+            agg = torch.cat([x, agg, node_attr], dim=1)
+        else:
+            agg = torch.cat([x, agg], dim=1)
+        out = self.node_mlp(agg)
+        if self.recurrent:
+            out = x + out
+        return out, agg
+    
     def coord2localframe(self, edge_index, coord):
         row, col = edge_index
         coord_diff = coord[row] - coord[col]
@@ -230,7 +253,6 @@ class Clof_GCL(nn.Module):
         h = residue + h
         h = self.layer_norm(h)
         return h, coord, edge_attr
-
 
 class EGNN(nn.Module):
     def __init__(self, in_node_nf, in_edge_nf, hidden_nf, device='cpu', act_fn=nn.SiLU(), n_layers=3, attention=False,
@@ -375,7 +397,7 @@ class ClofNet(nn.Module):
             edge_feat = self.fuse_edge(edge_feat)
         else:
             edge_feat = edge_attr
-            
+
         for i in range(0, self.n_layers):
             h, x_center, _ = self._modules["clof_gcl_%d" % i](
                 h, edges, x_center, edge_attr=edge_feat, node_attr=node_attr)
