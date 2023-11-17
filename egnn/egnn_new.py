@@ -3,6 +3,8 @@ import torch
 import math
 import numpy as np
 import logging
+import pdb
+
 class GCL(nn.Module):
     def __init__(self, input_nf, output_nf, hidden_nf, normalization_factor, aggregation_method,
                  edges_in_d=0, nodes_att_dim=0, act_fn=nn.SiLU(), attention=False):
@@ -163,6 +165,7 @@ class Clof_GCL(nn.Module):
         self.tanh = tanh
         edge_coords_nf = 1
         
+        pdb.set_trace()
         self.edge_mlp = nn.Sequential(
             nn.Linear(input_edge + edge_coords_nf + edges_in_d, hidden_nf),
             act_fn,
@@ -193,11 +196,12 @@ class Clof_GCL(nn.Module):
                 nn.Sigmoid())
     
     def edge_model(self, source, target, radial, edge_attr):
+        pdb.set_trace()
         if edge_attr is None:  # Unused.
             out = torch.cat([source, target, radial], dim=1)
         else:
             out = torch.cat([source, target, radial, edge_attr], dim=1)
-        print('out shape', out.shape)
+        
         out = self.edge_mlp(out)
         if self.attention:
             att_val = self.att_mlp(out)
@@ -247,6 +251,7 @@ class Clof_GCL(nn.Module):
         residue = h
         # h = self.layer_norm(h)
         radial, coord_diff, coord_cross, coord_vertical = self.coord2localframe(edge_index, coord)
+        pdb.set_trace()
         edge_feat = self.edge_model(h[row], h[col], radial, edge_attr)
         coord = self.coord_model(coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat)
         #coord += self.coord_mlp_vel(h) * vel
@@ -322,10 +327,11 @@ class ClofNet(nn.Module):
         self.embedding_edge = nn.Sequential(nn.Linear(in_edge_nf, 8), act_fn)
 
         edge_embed_dim = 10
+        
         self.fuse_edge = nn.Sequential(
             nn.Linear(edge_embed_dim, self.hidden_nf // 2), act_fn,
             nn.Linear(self.hidden_nf // 2, self.hidden_nf // 2), act_fn)
-
+        
         self.norm_diff = norm_diff
         for i in range(0, self.n_layers):
             self.add_module(
