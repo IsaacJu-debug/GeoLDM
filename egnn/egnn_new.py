@@ -362,17 +362,20 @@ class ClofNet(nn.Module):
         coff_feat = torch.cat([pesudo_angle, coff_i, coff_j], dim=-1)
         return coff_feat
 
-    def forward(self, h, x, edges, edge_attr=None, node_attr=None, node_mask=None, edge_mask=None):
+    def forward(self, h, x, edges, n_nodes=5, 
+                edge_attr=None, node_attr=None, node_mask=None, edge_mask=None):
         # Edit Emiel: Remove velocity as input
         h = self.embedding_node_in(h)
-        n_nodes = x.shape[1]
         x = x.reshape(-1, n_nodes, 3)
         centroid = torch.mean(x, dim=1, keepdim=True)
         x_center = (x - centroid).reshape(-1, 3)
         coff_feat = self.scalarization(edges, x_center)
-        edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
-        edge_feat = self.fuse_edge(edge_feat)
-
+        if edge_attr is not None:
+            edge_feat = torch.cat([edge_attr, coff_feat], dim=-1)
+            edge_feat = self.fuse_edge(edge_feat)
+        else:
+            edge_feat = edge_attr
+            
         for i in range(0, self.n_layers):
             h, x_center, _ = self._modules["clof_gcl_%d" % i](
                 h, edges, x_center, edge_attr=edge_feat, node_attr=node_attr)
