@@ -14,6 +14,13 @@ import torch
 
 def train_epoch(args, loader, epoch, model, model_dp, model_ema, ema, device, dtype, property_norms, optim,
                 nodes_dist, gradnorm_queue, dataset_info, prop_dist):
+    
+    if args.exp_name[-5:].lower() == "debug":
+        # Enable anomaly detection
+        torch.autograd.set_detect_anomaly(True)
+    else:
+        pass
+    
     model_dp.train()
     model.train()
     nll_epoch = []
