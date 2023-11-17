@@ -2,6 +2,7 @@ import numpy as np
 import getpass
 import os
 import torch
+import pdb
 
 # Folders
 def create_folders(args):
@@ -49,6 +50,7 @@ class Queue():
 
 def gradient_clipping(flow, gradnorm_queue):
     # Allow gradient norm to be 150% + 2 * stdev of the recent history.
+    pdb.set_trace()
     max_grad_norm = 1.5 * gradnorm_queue.mean() + 2 * gradnorm_queue.std()
 
     # Clips gradient and returns the norm
