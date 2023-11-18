@@ -201,7 +201,7 @@ class Clof_GCL(nn.Module):
                 nn.Linear(hidden_nf, 1),
                 nn.Sigmoid())
     
-    def edge_model(self, source, target, radial, edge_attr):
+    def edge_model(self, source, target, radial, edge_attr, edge_mask):
         #pdb.set_trace()
         if edge_attr is None:  # Unused.
             out = torch.cat([source, target, radial], dim=1)
@@ -212,6 +212,9 @@ class Clof_GCL(nn.Module):
         if self.attention:
             att_val = self.att_mlp(out)
             out = out * att_val
+
+        if edge_mask is not None:
+            out = out * edge_mask
         return out
 
     def node_model(self, x, edge_index, edge_attr, node_attr):
@@ -233,13 +236,25 @@ class Clof_GCL(nn.Module):
         coord_diff = coord[row] - coord[col]
         radial = torch.sum((coord_diff)**2, 1).unsqueeze(1)
         coord_cross = torch.cross(coord[row], coord[col])
+
+        # Epsilon to prevent NaN in case radial is zero or very close to zero
+        epsilon = 1e-8
+
         if self.norm_diff:
+
+            # Adding epsilon inside the square root to ensure non-negativity
+            norm = torch.sqrt(radial + epsilon) + 1
+            coord_diff = coord_diff / norm
+            cross_norm = (torch.sqrt(torch.sum((coord_cross)**2, 1).unsqueeze(1) + epsilon)) + 1
+            coord_cross = coord_cross / cross_norm
+
+            '''
             norm = torch.sqrt(radial) + 1
             coord_diff = coord_diff / norm
             cross_norm = (
                 torch.sqrt(torch.sum((coord_cross)**2, 1).unsqueeze(1))) + 1
             coord_cross = coord_cross / cross_norm
-
+            '''
         coord_vertical = torch.cross(coord_diff, coord_cross)
 
         return radial, coord_diff, coord_cross, coord_vertical
@@ -254,19 +269,24 @@ class Clof_GCL(nn.Module):
         coord += agg*self.coords_weight
         return coord
 
-    def forward(self, h, edge_index, coord, edge_attr=None, node_attr=None):
+    def forward(self, h, edge_index, coord, edge_attr=None, node_attr=None,
+                node_mask=None, edge_mask=None):
         # remove velocity as input
         row, col = edge_index
         residue = h
         # h = self.layer_norm(h)
         radial, coord_diff, coord_cross, coord_vertical = self.coord2localframe(edge_index, coord)
         #pdb.set_trace()
-        edge_feat = self.edge_model(h[row], h[col], radial, edge_attr)
+        edge_feat = self.edge_model(h[row], h[col], radial, edge_attr, edge_mask)
         coord = self.coord_model(coord, edge_index, coord_diff, coord_cross, coord_vertical, edge_feat)
         #coord += self.coord_mlp_vel(h) * vel
         h, agg = self.node_model(h, edge_index, edge_feat, node_attr)
         h = residue + h
         h = self.layer_norm(h)
+
+        if node_mask is not None:
+            h = h * node_mask
+        
         return h, coord, edge_attr
 
 class EGNN(nn.Module):
@@ -417,11 +437,13 @@ class ClofNet(nn.Module):
 
         for i in range(0, self.n_layers):
             h, x_center, _ = self._modules["clof_gcl_%d" % i](
-                h, edges, x_center, edge_attr=edge_feat, node_attr=node_attr)
+                h, edges, x_center, edge_attr=edge_feat, node_attr=node_attr, node_mask=node_mask, edge_mask=edge_mask)
 
         x = x_center.reshape(-1, n_nodes, 3) + centroid
         x = x.reshape(-1, 3)
         h = self.embedding_node_out(h)
+        if node_mask is not None:
+            h = h * node_mask
         return h, x
 
 class GNN(nn.Module):

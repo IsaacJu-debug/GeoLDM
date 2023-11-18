@@ -91,6 +91,9 @@ parser.add_argument('--sin_embedding', type=eval, default=False,
 parser.add_argument('--ode_regularization', type=float, default=1e-3)
 parser.add_argument('--dataset', type=str, default='qm9',
                     help='qm9 | qm9_second_half (train only on the last 50K samples of the training dataset)')
+
+parser.add_argument('--dataset_portion', type=float, default=1.0, help='portion of the dataset to use')
+                    
 parser.add_argument('--datadir', type=str, default='qm9/temp',
                     help='qm9 directory')
 parser.add_argument('--filter_n_atoms', type=int, default=None,
@@ -182,7 +185,8 @@ if args.no_wandb:
     mode = 'disabled'
 else:
     mode = 'online' if args.online else 'offline'
-kwargs = {'entity': args.wandb_usr, 'name': args.exp_name + '_' + args.dataset + '_' + args.model,
+kwargs = {'entity': args.wandb_usr, 'name': args.exp_name + '_' + args.dataset + '_' +\
+                     args.model + '_splitRatio_' + str(args.dataset_portion),
           'project': 'e3_diffusion_qm9', 'config': args,
           'settings': wandb.Settings(_disable_stats=False), 'reinit': True, 'mode': mode}
 wandb.init(**kwargs)
@@ -251,13 +255,15 @@ def main():
         
         model_state_dict = model.state_dict()
         copied_state_dict = copy.deepcopy(model_state_dict)
-        
-        if args.train_diffusion:
-            new_model, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
-        else:
-            new_model, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
 
+        if args.train_diffusion:
+            model_ema, nodes_dist, prop_dist = get_latent_diffusion(args, device, dataset_info, dataloaders['train'])
+        else:
+            model_ema, nodes_dist, prop_dist = get_autoencoder(args, device, dataset_info, dataloaders['train'])
+        
+        #print('model_ema device {}'.format(model_ema.device))
         model_ema.load_state_dict(copied_state_dict)
+        model_ema.to(device)
         #model_ema = copy.deepcopy(model)
         ema = flow_utils.EMA(args.ema_decay)
 
