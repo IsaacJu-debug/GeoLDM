@@ -219,6 +219,7 @@ else:
     print('saving diffusion model details...')
     utils.gnn_model_summary(model, args)
 
+print(f"Property norm info: {property_norms}")
 if prop_dist is not None:
     prop_dist.set_normalizer(property_norms)
 model = model.to(device)
@@ -291,6 +292,8 @@ def main():
                 wandb.log(model.log_info(), commit=True)
 
             if not args.break_train_epoch and args.train_diffusion:
+                if len(args.conditioning) > 0:
+                    prop_dist.set_normalizer(property_norms)
                 analyze_and_save(args=args, epoch=epoch, model_sample=model_ema, nodes_dist=nodes_dist,
                                  dataset_info=dataset_info, device=device,
                                  prop_dist=prop_dist, n_samples=args.n_stability_samples)

@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -110,6 +111,7 @@ def sample_chain(args, device, flow, n_tries, dataset_info, prop_dist=None):
 def sample(args, device, generative_model, dataset_info,
            prop_dist=None, nodesxsample=torch.tensor([10]), context=None,
            fix_noise=False):
+    pdb.set_trace()
     max_n_nodes = dataset_info['max_n_nodes']  # this is the maximum node_size in QM9
 
     assert int(torch.max(nodesxsample)) <= max_n_nodes
@@ -122,6 +124,7 @@ def sample(args, device, generative_model, dataset_info,
     # Compute edge_mask
 
     edge_mask = node_mask.unsqueeze(1) * node_mask.unsqueeze(2)
+    print(node_mask.size(), edge_mask.size())
     diag_mask = ~torch.eye(edge_mask.size(1), dtype=torch.bool).unsqueeze(0)
     edge_mask *= diag_mask
     edge_mask = edge_mask.view(batch_size * max_n_nodes * max_n_nodes, 1).to(device)

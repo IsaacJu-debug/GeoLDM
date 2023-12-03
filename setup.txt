@@ -1,0 +1,36 @@
+#!/bin/bash
+# configurable parameters
+VIRTUAL_NAME=ai_molecular_generation
+PYTORCH_VERSION=2.0.0+cu118
+TARGET_ROOT=/opt/conda/envs/
+
+# create virtual environment
+# Setup the virtual environment
+echo "Setting up virtual python environment..."
+#conda create --name $VIRTUAL_NAME --prefix ${TARGET_ROOT} --yes python=3.8
+conda create --prefix $TARGET_ROOT/$VIRTUAL_NAME --yes python=3.10
+#$PYTHON_ROOT/bin/virtualenv --system-site-packages $TARGET_ROOT/$VIRTUAL_NAME
+
+# Build a start script
+echo "  Building startup script..."
+rm $TARGET_ROOT/start_$VIRTUAL_NAME.sh
+echo "#!/bin/bash" > $TARGET_ROOT/start_$VIRTUAL_NAME.sh
+echo "source activate $TARGET_ROOT/$VIRTUAL_NAME" >> $TARGET_ROOT/start_$VIRTUAL_NAME.sh
+
+echo "  Activating $VIRTUAL_NAME..."
+source $TARGET_ROOT/start_$VIRTUAL_NAME.sh
+
+# Install packages
+echo "  Installing prequisites..."
+conda install python=3.10
+export PYTHONPATH="$TARGET_ROOT//site-packages:$PATH"
+conda install numpy jupyter
+pip install -q --upgrade pip
+pip install -q setuptools dask h5py lxml pandas obspy seaborn
+
+echo " Install GeoLDM requisites"
+cd GeoLDM
+pip install -r requirements.txt
+cd $TARGET_ROOT
+
+echo "Done!"

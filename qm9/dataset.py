@@ -32,8 +32,9 @@ def retrieve_dataloaders(cfg):
         for split in datasets.keys():
             dataset_size = len(datasets[split])
             indices = list(range(dataset_size))
-            subset_indices = np.random.choice(indices, size=dataset_size // 4, replace=False)
+            subset_indices = np.random.choice(indices, size=dataset_size // 2, replace=False)
             datasets[split] = torch.utils.data.Subset(datasets[split], subset_indices)
+
 
         # Construct PyTorch dataloaders from datasets
         preprocess = PreprocessQM9(load_charges=cfg.include_charges)

@@ -221,8 +221,8 @@ class DistributionProperty:
         self.distributions = {}
         self.properties = properties
         for prop in properties:
-            atom_nums = torch.zeros(size=(len(dataloader.dataset), 1)) #dataloader.dataset.data['num_atoms']
-            prop_values = torch.zeros(size=(len(dataloader.dataset), 1)) #dataloader.dataset.data[prop]
+            atom_nums = torch.zeros(size=(len(dataloader.dataset), )) #dataloader.dataset.data['num_atoms']
+            prop_values = torch.zeros(size=(len(dataloader.dataset), )) #dataloader.dataset.data[prop]
             for idx, value in enumerate(dataloader.dataset):
                 atom_nums[idx] = value["num_atoms"]
                 prop_values[idx] = value[prop]
