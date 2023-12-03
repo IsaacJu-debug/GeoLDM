@@ -1,0 +1,283 @@
+----------------------------------------------------------------
+     Layer.Parameter         Param Tensor Shape         Param #
+----------------------------------------------------------------
+         gamma.gamma                     [1001]            1001
+dynamics.clof_net.embedding_node_in.weight                   [256, 2]             512
+dynamics.clof_net.embedding_node_in.bias                      [256]             256
+dynamics.clof_net.embedding_node_out.weight                   [2, 256]             512
+dynamics.clof_net.embedding_node_out.bias                        [2]               2
+dynamics.clof_net.fuse_edge.0.weight                   [128, 8]            1024
+dynamics.clof_net.fuse_edge.0.bias                      [128]             128
+dynamics.clof_net.fuse_edge.2.weight                 [128, 128]           16384
+dynamics.clof_net.fuse_edge.2.bias                      [128]             128
+dynamics.clof_net.clof_gcl_0.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_0.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_0.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_0.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_1.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_1.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_1.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_1.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_1.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_1.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_1.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_1.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_2.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_2.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_2.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_2.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_2.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_2.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_2.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_2.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_3.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_3.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_3.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_3.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_3.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_3.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_3.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_3.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_4.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_4.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_4.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_4.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_4.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_4.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_4.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_4.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_5.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_5.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_5.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_5.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_5.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_5.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_5.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_5.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_6.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_6.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_6.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_6.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_6.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_6.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_6.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_6.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_7.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_7.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_7.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_7.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_7.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_7.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_7.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_7.coord_mlp.2.weight                   [3, 256]             768
+dynamics.clof_net.clof_gcl_8.edge_mlp.0.weight                 [256, 641]          164096
+dynamics.clof_net.clof_gcl_8.edge_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_8.edge_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.node_mlp.0.weight                 [256, 512]          131072
+dynamics.clof_net.clof_gcl_8.node_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.node_mlp.2.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_8.node_mlp.2.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.layer_norm.weight                      [256]             256
+dynamics.clof_net.clof_gcl_8.layer_norm.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.coord_mlp.0.weight                 [256, 256]           65536
+dynamics.clof_net.clof_gcl_8.coord_mlp.0.bias                      [256]             256
+dynamics.clof_net.clof_gcl_8.coord_mlp.2.weight                   [3, 256]             768
+vae.encoder.clof_net.embedding_node_in.weight                   [256, 6]            1536
+vae.encoder.clof_net.embedding_node_in.bias                      [256]             256
+vae.encoder.clof_net.embedding_node_out.weight                 [256, 256]           65536
+vae.encoder.clof_net.embedding_node_out.bias                      [256]             256
+vae.encoder.clof_net.fuse_edge.0.weight                   [128, 8]            1024
+vae.encoder.clof_net.fuse_edge.0.bias                      [128]             128
+vae.encoder.clof_net.fuse_edge.2.weight                 [128, 128]           16384
+vae.encoder.clof_net.fuse_edge.2.bias                      [128]             128
+vae.encoder.clof_net.clof_gcl_0.edge_mlp.0.weight                 [256, 641]          164096
+vae.encoder.clof_net.clof_gcl_0.edge_mlp.0.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.encoder.clof_net.clof_gcl_0.edge_mlp.2.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.encoder.clof_net.clof_gcl_0.node_mlp.0.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.encoder.clof_net.clof_gcl_0.node_mlp.2.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.layer_norm.weight                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.layer_norm.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.coord_mlp.0.weight                 [256, 256]           65536
+vae.encoder.clof_net.clof_gcl_0.coord_mlp.0.bias                      [256]             256
+vae.encoder.clof_net.clof_gcl_0.coord_mlp.2.weight                   [3, 256]             768
+vae.encoder.final_mlp.0.weight                 [256, 256]           65536
+vae.encoder.final_mlp.0.bias                      [256]             256
+vae.encoder.final_mlp.2.weight                   [3, 256]             768
+vae.encoder.final_mlp.2.bias                        [3]               3
+vae.decoder.clof_net.embedding_node_in.weight                   [256, 1]             256
+vae.decoder.clof_net.embedding_node_in.bias                      [256]             256
+vae.decoder.clof_net.embedding_node_out.weight                   [6, 256]            1536
+vae.decoder.clof_net.embedding_node_out.bias                        [6]               6
+vae.decoder.clof_net.fuse_edge.0.weight                   [128, 8]            1024
+vae.decoder.clof_net.fuse_edge.0.bias                      [128]             128
+vae.decoder.clof_net.fuse_edge.2.weight                 [128, 128]           16384
+vae.decoder.clof_net.fuse_edge.2.bias                      [128]             128
+vae.decoder.clof_net.clof_gcl_0.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_0.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_0.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_1.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_1.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_1.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_1.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_1.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_1.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_1.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_2.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_2.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_2.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_2.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_2.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_2.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_2.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_3.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_3.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_3.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_3.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_3.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_3.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_3.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_4.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_4.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_4.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_4.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_4.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_4.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_4.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_5.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_5.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_5.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_5.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_5.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_5.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_5.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_6.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_6.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_6.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_6.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_6.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_6.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_6.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_7.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_7.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_7.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_7.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_7.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_7.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_7.coord_mlp.2.weight                   [3, 256]             768
+vae.decoder.clof_net.clof_gcl_8.edge_mlp.0.weight                 [256, 641]          164096
+vae.decoder.clof_net.clof_gcl_8.edge_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_8.edge_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.clof_net.clof_gcl_8.node_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_8.node_mlp.2.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.layer_norm.weight                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.layer_norm.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.coord_mlp.0.weight                 [256, 256]           65536
+vae.decoder.clof_net.clof_gcl_8.coord_mlp.0.bias                      [256]             256
+vae.decoder.clof_net.clof_gcl_8.coord_mlp.2.weight                   [3, 256]             768
+----------------------------------------------------------------
+Total params: 9583860
+Trainable params: 9582859
+Non-trainable params: 1001

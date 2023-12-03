@@ -1,4 +1,3 @@
-import pdb
 from equivariant_diffusion import utils
 import numpy as np
 import math
@@ -261,7 +260,8 @@ class EnVariationalDiffusion(torch.nn.Module):
             dynamics: models.EGNN_dynamics_QM9, in_node_nf: int, n_dims: int,
             timesteps: int = 1000, parametrization='eps', noise_schedule='learned',
             noise_precision=1e-4, loss_type='vlb', norm_values=(1., 1., 1.),
-            norm_biases=(None, 0., 0.), include_charges=True):
+            norm_biases=(None, 0., 0.), include_charges=True, classifier_free_guidance=False, 
+            classifier_weight = 1):
         super().__init__()
 
         assert loss_type in {'vlb', 'l2'}
@@ -296,6 +296,14 @@ class EnVariationalDiffusion(torch.nn.Module):
 
         if noise_schedule != 'learned':
             self.check_issues_norm_values()
+        self.classifier_free_guidance = classifier_free_guidance
+        self.w = classifier_weight
+    
+    def set_class_weight(self, class_weight):
+        if self.classifier_free_guidance:
+            self.w = class_weight
+        else:
+            assert("Classifier free guidance is not enabled")
 
     def check_issues_norm_values(self, num_stdevs=8):
         zeros = torch.zeros((1, 1))
@@ -314,7 +322,6 @@ class EnVariationalDiffusion(torch.nn.Module):
 
     def phi(self, x, t, node_mask, edge_mask, context):
         net_out = self.dynamics._forward(t, x, node_mask, edge_mask, context)
-
         return net_out
 
     def inflate_batch_array(self, array, target):
@@ -481,11 +488,11 @@ class EnVariationalDiffusion(torch.nn.Module):
         gamma_0 = self.gamma(zeros)
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
-        net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
-        # net_out1 = self.phi(z0, zeros, node_mask, edge_mask, context)
-        # z0_masked = z0
-        # z0_masked[]
-        # net_out2 = self.phi(z0, zeros, node_mask, edge_mask, context)
+        if self.classifier_free_guidance:
+            net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - \
+                    self.w * self.phi(z0, zeros, node_mask, edge_mask, context=None)
+        else:
+            net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         mu_x = self.compute_x_pred(net_out, z0, gamma_0)
@@ -692,6 +699,141 @@ class EnVariationalDiffusion(torch.nn.Module):
         return loss, {'t': t_int.squeeze(), 'loss_t': loss.squeeze(),
                       'error': error.squeeze()}
 
+
+    def compute_guidance_loss(self, x_cond, h_cond, x_uncond, h_uncond, node_mask, edge_mask, context, t0_always):
+        """Computes an estimator for the variational lower bound, or the simple loss (MSE) for classifier-free guidance."""
+
+        # This part is about whether to include loss term 0 always.
+        if t0_always:
+            # loss_term_0 will be computed separately.
+            # estimator = loss_0 + loss_t,  where t ~ U({1, ..., T})
+            lowest_t = 1
+        else:
+            # estimator = loss_t,           where t ~ U({0, ..., T})
+            lowest_t = 0
+
+        # Sample a timestep t.
+        t_int = torch.randint(
+            lowest_t, self.T + 1, size=(x_cond.size(0), 1), device=x_cond.device).float()
+        s_int = t_int - 1
+        t_is_zero = (t_int == 0).float()  # Important to compute log p(x | z0).
+
+        # Normalize t to [0, 1]. Note that the negative
+        # step of s will never be used, since then p(x | z0) is computed.
+        s = s_int / self.T
+        t = t_int / self.T
+
+        # Compute gamma_s and gamma_t via the network.
+        # Note: should be fine to use as is for conditional or unconditional x's
+        gamma_s = self.inflate_batch_array(self.gamma(s), x_cond)
+        gamma_t = self.inflate_batch_array(self.gamma(t), x_cond)
+    
+        # Compute alpha_t and sigma_t from gamma.
+        alpha_t = self.alpha(gamma_t, x_cond)
+        sigma_t = self.sigma(gamma_t, x_cond)
+
+        # Sample zt ~ Normal(alpha_t x, sigma_t)
+        eps = self.sample_combined_position_feature_noise(
+            n_samples=x_cond.size(0), n_nodes=x_cond.size(1), node_mask=node_mask)
+
+        # Concatenate x, h[integer] and h[categorical].
+        xh_cond = torch.cat([x_cond, h_cond['categorical'], h_cond['integer']], dim=2)
+        xh_uncond = torch.cat([x_uncond, h_uncond['categorical'], h_uncond['integer']], dim=2)
+        # Sample z given x, h for timestep t, from q(z_t | x, h)
+        z_t_cond  = alpha_t * xh_cond + sigma_t * eps
+        z_t_uncond = alpha_t * xh_uncond + sigma_t * eps
+        diffusion_utils.assert_mean_zero_with_mask(z_t_cond[:, :, :self.n_dims], node_mask)
+        diffusion_utils.assert_mean_zero_with_mask(z_t_uncond[:, :, :self.n_dims], node_mask)
+
+        # Neural net prediction.
+        if self.classifier_free_guidance:
+            net_out = (1 + self.w) * self.phi(z_t_cond, t, node_mask, edge_mask, context) - self.w * self.phi(z_t_uncond, t, node_mask, edge_mask, context=None)
+        else:
+            net_out = self.phi(z_t_cond, t, node_mask, edge_mask, context)
+            
+
+        # Compute the error.
+        error = self.compute_error(net_out, gamma_t, eps)
+
+        if self.training and self.loss_type == 'l2':
+            SNR_weight = torch.ones_like(error)
+        else:
+            # Compute weighting with SNR: (SNR(s-t) - 1) for epsilon parametrization.
+            SNR_weight = (self.SNR(gamma_s - gamma_t) - 1).squeeze(1).squeeze(1)
+        assert error.size() == SNR_weight.size()
+        loss_t_larger_than_zero = 0.5 * SNR_weight * error
+
+        # The _constants_ depending on sigma_0 from the
+        # cross entropy term E_q(z0 | x) [log p(x | z0)].
+        neg_log_constants = -self.log_constants_p_x_given_z0(x_cond, node_mask)
+
+        # Reset constants during training with l2 loss.
+        if self.training and self.loss_type == 'l2':
+            neg_log_constants = torch.zeros_like(neg_log_constants)
+
+        # The KL between q(z1 | x) and p(z1) = Normal(0, 1). Should be close to zero.
+        kl_prior = self.kl_prior(xh_cond, node_mask)
+
+        # Combining the terms
+        if t0_always:
+            loss_t = loss_t_larger_than_zero
+            num_terms = self.T  # Since t=0 is not included here.
+            estimator_loss_terms = num_terms * loss_t
+
+            # Compute noise values for t = 0.
+            t_zeros = torch.zeros_like(s)
+            gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x_cond)
+            alpha_0 = self.alpha(gamma_0, x_cond)
+            sigma_0 = self.sigma(gamma_0, x_cond)
+
+            # Sample z_0 given x, h for timestep t, from q(z_t | x, h)
+            eps_0 = self.sample_combined_position_feature_noise(
+                n_samples=x_cond.size(0), n_nodes=x_cond.size(1), node_mask=node_mask)
+            z_0_cond = alpha_0 * xh_cond + sigma_0 * eps_0
+            z_0_uncond = alpha_0 * xh_uncond + sigma_0 * eps_0
+
+            if self.classifier_free_guidance:
+                net_out = (1 + self.w) * self.phi(z_0_cond, t_zeros, node_mask, edge_mask, context) - \
+                    self.w * self.phi(z_0_uncond, t_zeros, node_mask, edge_mask, context=None)
+            else:
+                net_out = self.phi(z_0_cond, t_zeros, node_mask, edge_mask, context)
+
+            loss_term_0 = -self.log_pxh_given_z0_without_constants(
+                x, h, z_0, gamma_0, eps_0, net_out, node_mask)
+
+            assert kl_prior.size() == estimator_loss_terms.size()
+            assert kl_prior.size() == neg_log_constants.size()
+            assert kl_prior.size() == loss_term_0.size()
+
+            loss = kl_prior + estimator_loss_terms + neg_log_constants + loss_term_0
+
+        else:
+            # Computes the L_0 term (even if gamma_t is not actually gamma_0)
+            # and this will later be selected via masking.
+            loss_term_0 = -self.log_pxh_given_z0_without_constants(
+                x, h, z_t, gamma_t, eps, net_out, node_mask)
+
+            t_is_not_zero = 1 - t_is_zero
+
+            loss_t = loss_term_0 * t_is_zero.squeeze() + t_is_not_zero.squeeze() * loss_t_larger_than_zero
+
+            # Only upweigh estimator if using the vlb objective.
+            if self.training and self.loss_type == 'l2':
+                estimator_loss_terms = loss_t
+            else:
+                num_terms = self.T + 1  # Includes t = 0.
+                estimator_loss_terms = num_terms * loss_t
+
+            assert kl_prior.size() == estimator_loss_terms.size()
+            assert kl_prior.size() == neg_log_constants.size()
+
+            loss = kl_prior + estimator_loss_terms + neg_log_constants
+
+        assert len(loss.shape) == 1, f'{loss.shape} has more than only batch dim.'
+
+        return loss, {'t': t_int.squeeze(), 'loss_t': loss.squeeze(),
+                      'error': error.squeeze()}
+
     def forward(self, x, h, node_mask=None, edge_mask=None, context=None):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
@@ -730,7 +872,11 @@ class EnVariationalDiffusion(torch.nn.Module):
         sigma_t = self.sigma(gamma_t, target_tensor=zt)
 
         # Neural net prediction.
-        eps_t = self.phi(zt, t, node_mask, edge_mask, context)
+        if self.classifier_free_guidance:
+            eps_t = (1 + self.w) * self.phi(zt, t, node_mask, edge_mask, context) - \
+                    self.w * self.phi(zt, t, node_mask, edge_mask, context=None)
+        else:
+            eps_t = self.phi(zt, t, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         diffusion_utils.assert_mean_zero_with_mask(zt[:, :, :self.n_dims], node_mask)
@@ -941,6 +1087,7 @@ class EnHierarchicalVAE(torch.nn.Module):
 
         # Concatenate x, h[integer] and h[categorical].
         xh = torch.cat([x, h['categorical'], h['integer']], dim=2)
+
         # Encoder output.
         z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.encode(x, h, node_mask, edge_mask, context)
         
@@ -1006,7 +1153,7 @@ class EnHierarchicalVAE(torch.nn.Module):
 
         # Concatenate x, h[integer] and h[categorical].
         xh = torch.cat([x, h['categorical'], h['integer']], dim=2)
-        
+
         diffusion_utils.assert_mean_zero_with_mask(xh[:, :, :self.n_dims], node_mask)
 
         # Encoder output.
@@ -1058,6 +1205,7 @@ def disabled_train(self, mode=True):
     return self
 
 
+
 class EnLatentDiffusion(EnVariationalDiffusion):
     """
     The E(n) Latent Diffusion Module.
@@ -1106,7 +1254,11 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         gamma_0 = self.gamma(zeros)
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
-        net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
+        if self.classifier_free_guidance:
+            net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - \
+                self.w * self.phi(z0, zeros, node_mask, edge_mask, context=None)
+        else:
+            net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         mu_x = self.compute_x_pred(net_out, z0, gamma_0)
@@ -1138,59 +1290,94 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         return log_p_xh_given_z
     
     def forward(self, x, h, node_mask=None, edge_mask=None, context=None):
-        self._forward(x,h,node_mask,edge_mask, context)
-    def _forward(self, x, h, node_mask=None, edge_mask=None, context=None):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
 
-        # Encode data to latent space.
-        # z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
-        z_x_mu_cond, z_x_sigma_cond, z_h_mu_cond, z_h_sigma_cond = self.vae.encode(x, h, node_mask, edge_mask, context)
-        masked_context = None
-        z_x_mu_uncond, z_x_sigma_uncond, z_h_mu_uncond, z_h_sigma_uncond = self.vae.encode(x, h, node_mask, edge_mask, masked_context)
-        z_x_mu = z_x_mu_cond * (1 + self.w) - (self.w) * z_x_mu_uncond
-        z_x_sigma = z_x_sigma_cond * (1 + self.w) - (self.w) * z_x_sigma_uncond
-        z_h_mu = z_h_mu_cond * (1 + self.w) - (self.w) * z_h_mu_uncond
-        z_h_sigma = z_h_sigma_cond * (1 + self.w) - (self.w) * z_h_sigma_uncond
-        
         # Compute fixed sigma values.
         t_zeros = torch.zeros(size=(x.size(0), 1), device=x.device)
         gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x)
         sigma_0 = self.sigma(gamma_0, x)
-
-        # Infer latent z.
-        z_xh_mean = torch.cat([z_x_mu, z_h_mu], dim=2)
-        diffusion_utils.assert_correctly_masked(z_xh_mean, node_mask)
         z_xh_sigma = sigma_0
-        # z_xh_sigma = torch.cat([z_x_sigma.expand(-1, -1, 3), z_h_sigma], dim=2)
-        z_xh = self.vae.sample_normal(z_xh_mean, z_xh_sigma, node_mask)
-        # z_xh = z_xh_mean
-        z_xh = z_xh.detach()  # Always keep the encoder fixed.
-        diffusion_utils.assert_correctly_masked(z_xh, node_mask)
+
+        # Encode data to latent space.
+        if self.classifier_free_guidance:
+            z_x_mu_cond, z_x_sigma_cond, z_h_mu_cond, z_h_sigma_cond = self.vae.encode(x, h, node_mask, edge_mask, context)
+            # Masked context
+            z_x_mu_uncond, z_x_sigma_uncond, z_h_mu_uncond, z_h_sigma_uncond = self.vae.encode(x, h, node_mask, edge_mask, context=None)
+            z_xh_mean_cond = torch.cat([z_x_mu_cond, z_h_mu_cond], dim=2)
+            z_xh_mean_uncond = torch.cat([z_x_mu_uncond, z_h_mu_uncond], dim=2)
+            diffusion_utils.assert_correctly_masked(z_xh_mean_cond, node_mask)
+            diffusion_utils.assert_correctly_masked(z_xh_mean_uncond, node_mask)
+
+            z_xh_cond = self.vae.sample_normal(z_xh_mean_cond, z_xh_sigma, node_mask)
+            z_xh_uncond = self.vae.sample_normal(z_xh_mean_uncond, z_xh_sigma, node_mask)
+            z_xh_cond = z_xh_cond.detach()
+            diffusion_utils.assert_correctly_masked(z_xh_cond, node_mask)
+            z_xh_uncond = z_xh_uncond.detach()
+            diffusion_utils.assert_correctly_masked(z_xh_uncond, node_mask)
+        else:
+            z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
+            z_xh_mean = torch.cat([z_x_mu, z_h_mu], dim=2)
+            diffusion_utils.assert_correctly_masked(z_xh_mean, node_mask)
+            z_xh = self.vae.sample_normal(z_xh_mean, z_xh_sigma, node_mask)
+            z_xh = z_xh.detach()  # Always keep the encoder fixed.
+            diffusion_utils.assert_correctly_masked(z_xh, node_mask)
 
         # Compute reconstruction loss.
         if self.trainable_ae:
             xh = torch.cat([x, h['categorical'], h['integer']], dim=2)
             # Decoder output (reconstruction).
-            x_recon, h_recon = self.vae.decoder._forward(z_xh, node_mask, edge_mask, context)
-            xh_rec = torch.cat([x_recon, h_recon], dim=2)
-            loss_recon = self.vae.compute_reconstruction_error(xh_rec, xh)
+            ##x_recon, h_recon = self.vae.decoder._forward(z_xh, node_mask, edge_mask, context)
+            ##xh_rec = torch.cat([x_recon, h_recon], dim=2)
+            ## loss_recon = self.vae.compute_reconstruction_error(xh_rec, xh)
+            if self.classifier_free_guidance:
+                x_recon_cond, h_recon_cond = self.vae.decoder._forward(z_xh_cond, node_mask, edge_mask, context)
+                x_recon_uncond, h_recon_uncond = self.vae.decoder._forward(z_xh_uncond, node_mask, edge_mask, context=None)
+                xh_rec_cond = torch.cat([x_recon_cond, h_recon_cond], dim=2)
+                xh_rec_uncond = torch.cat([x_recon_uncond, h_recon_uncond], dim=2) 
+                loss_recon = (1 + self.w) * self.vae.compute_reconstruction_error(xh_rec_cond, xh) - \
+                            self.w * self.vae.compute_reconstruction_error(xh_rec_uncond, xh)
+            else:
+                # Decoder output (reconstruction).
+                x_recon, h_recon = self.vae.decoder._forward(z_xh, node_mask, edge_mask, context)
+                xh_rec = torch.cat([x_recon, h_recon], dim=2)
+                loss_recon = self.vae.compute_reconstruction_error(xh_rec, xh)
         else:
             loss_recon = 0
 
-        z_x = z_xh[:, :, :self.n_dims]
-        z_h = z_xh[:, :, self.n_dims:]
-        diffusion_utils.assert_mean_zero_with_mask(z_x, node_mask)
-        # Make the data structure compatible with the EnVariationalDiffusion compute_loss().
-        z_h = {'categorical': torch.zeros(0).to(z_h), 'integer': z_h}
+
+        if self.classifier_free_guidance:
+            z_x_cond, z_h_cond = z_xh_cond[:, :, :self.n_dims], z_xh_cond[:, :, self.n_dims:]
+            z_x_uncond, z_h_uncond = z_xh_uncond[:, :, :self.n_dims], z_xh_uncond[:, :, self.n_dims:]
+            diffusion_utils.assert_mean_zero_with_mask(z_x_cond, node_mask)
+            diffusion_utils.assert_mean_zero_with_mask(z_x_uncond, node_mask)
+            z_h_cond = {'categorical': torch.zeros(0).to(z_h_cond), 'integer': z_h_cond}
+            z_h_uncond = {'categorical': torch.zeros(0).to(z_h_uncond), 'integer': z_h_uncond}
+        else:
+            z_x = z_xh[:, :, :self.n_dims]
+            z_h = z_xh[:, :, self.n_dims:]
+            diffusion_utils.assert_mean_zero_with_mask(z_x, node_mask)
+            # Make the data structure compatible with the EnVariationalDiffusion compute_loss().
+            z_h = {'categorical': torch.zeros(0).to(z_h), 'integer': z_h}
+
 
         if self.training:
             # Only 1 forward pass when t0_always is False.
-            loss_ld, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=False)
+            ##loss_ld, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=False)
+            if self.classifier_free_guidance:
+                loss_ld, loss_dict = self.compute_guidance_loss(z_x_cond, z_h_cond, z_x_uncond, z_h_uncond, 
+                                                    node_mask, edge_mask, context, t0_always=False)
+            else:
+                loss_1d, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=False)
         else:
             # Less variance in the estimator, costs two forward passes.
-            loss_ld, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=True)
+            ##loss_ld, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=True)
+            if self.classifier_free_guidance:
+                loss_ld, loss_dict = self.compute_guidance_loss(z_x_cond, z_h_cond, z_x_uncond, z_h_uncond, 
+                                                    node_mask, edge_mask, context, t0_always=True)
+            else:
+                loss_ld, loss_dict = self.compute_loss(z_x, z_h, node_mask, edge_mask, context, t0_always=True)
         
         # The _constants_ depending on sigma_0 from the
         # cross entropy term E_q(z0 | x) [log p(x | z0)].
@@ -1204,6 +1391,7 @@ class EnLatentDiffusion(EnVariationalDiffusion):
 
         return neg_log_pxh
     
+
     @torch.no_grad()
     def sample(self, n_samples, n_nodes, node_mask, edge_mask, context, fix_noise=False):
         """

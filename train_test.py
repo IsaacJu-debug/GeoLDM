@@ -101,7 +101,7 @@ def train_epoch(args, loader, epoch, model, model_dp, model_ema, ema, device, dt
                                   batch_id=str(i))
             sample_different_sizes_and_save(model_ema, nodes_dist, args, device, dataset_info,
                                             prop_dist, epoch=epoch)
-            print(f'Sampling took {time.time() - start:.2f} seconds')
+            wandb.log(f'Sampling took {time.time() - start:.2f} seconds')
 
             vis.visualize(f"outputs/{args.exp_name}/epoch_{epoch}_{i}", dataset_info=dataset_info, wandb=wandb)
             vis.visualize_chain(f"outputs/{args.exp_name}/epoch_{epoch}_{i}/chain/", dataset_info, wandb=wandb)

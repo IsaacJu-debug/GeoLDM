@@ -33,7 +33,10 @@ parser.add_argument('--ae_path', type=str, default=None,
                     help='Specify first stage model path')
 parser.add_argument('--trainable_ae', action='store_true',
                     help='Train first stage AutoEncoder model')
-
+parser.add_argument('--classifier_free_guidance', action='store_true', 
+                    help='Train LatentDiffusionModel model with classifier-free guidance')
+parser.add_argument('--guidance_weight', type=float, default=1, 
+                    help='Classifier-free guidance weight')
 # VAE args
 parser.add_argument('--latent_nf', type=int, default=4,
                     help='number of latent features')
@@ -219,7 +222,6 @@ else:
     print('saving diffusion model details...')
     utils.gnn_model_summary(model, args)
 
-print(f"Property norm info: {property_norms}")
 if prop_dist is not None:
     prop_dist.set_normalizer(property_norms)
 model = model.to(device)
@@ -277,6 +279,7 @@ def main():
         model_ema = model
         model_ema_dp = model_dp
 
+    assert(args.classifier_free_guidance == False if args.conditioning == False else True), "Can't use classifier-free guidance for unconditional generation"
     best_nll_val = 1e8
     best_nll_test = 1e8
     for epoch in range(args.start_epoch, args.n_epochs):
@@ -292,8 +295,6 @@ def main():
                 wandb.log(model.log_info(), commit=True)
 
             if not args.break_train_epoch and args.train_diffusion:
-                if len(args.conditioning) > 0:
-                    prop_dist.set_normalizer(property_norms)
                 analyze_and_save(args=args, epoch=epoch, model_sample=model_ema, nodes_dist=nodes_dist,
                                  dataset_info=dataset_info, device=device,
                                  prop_dist=prop_dist, n_samples=args.n_stability_samples)

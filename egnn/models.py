@@ -80,7 +80,6 @@ class EGNN_dynamics_QM9(nn.Module):
         if context is not None:
             # We're conditioning, awesome!
             context = context.view(bs*n_nodes, self.context_node_nf)
-            breakpoint()
             h = torch.cat([h, context], dim=1)
         if self.mode == 'egnn_dynamics':
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
@@ -227,7 +226,6 @@ class EGNN_encoder_QM9(nn.Module):
         if context is not None:
             # We're conditioning, awesome!
             context = context.view(bs*n_nodes, self.context_node_nf)
-            breakpoint()
             h = torch.cat([h, context], dim=1)
         if self.mode == 'egnn_dynamics':
             h_final, x_final = self.egnn(h, x, edges, node_mask=node_mask, edge_mask=edge_mask)
