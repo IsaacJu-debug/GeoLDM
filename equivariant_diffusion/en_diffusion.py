@@ -1,3 +1,4 @@
+import pdb
 from equivariant_diffusion import utils
 import numpy as np
 import math
@@ -481,6 +482,10 @@ class EnVariationalDiffusion(torch.nn.Module):
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
         net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
+        # net_out1 = self.phi(z0, zeros, node_mask, edge_mask, context)
+        # z0_masked = z0
+        # z0_masked[]
+        # net_out2 = self.phi(z0, zeros, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         mu_x = self.compute_x_pred(net_out, z0, gamma_0)
@@ -936,7 +941,6 @@ class EnHierarchicalVAE(torch.nn.Module):
 
         # Concatenate x, h[integer] and h[categorical].
         xh = torch.cat([x, h['categorical'], h['integer']], dim=2)
-
         # Encoder output.
         z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.encode(x, h, node_mask, edge_mask, context)
         
@@ -1002,7 +1006,7 @@ class EnHierarchicalVAE(torch.nn.Module):
 
         # Concatenate x, h[integer] and h[categorical].
         xh = torch.cat([x, h['categorical'], h['integer']], dim=2)
-
+        
         diffusion_utils.assert_mean_zero_with_mask(xh[:, :, :self.n_dims], node_mask)
 
         # Encoder output.
@@ -1134,12 +1138,22 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         return log_p_xh_given_z
     
     def forward(self, x, h, node_mask=None, edge_mask=None, context=None):
+        self._forward(x,h,node_mask,edge_mask, context)
+    def _forward(self, x, h, node_mask=None, edge_mask=None, context=None):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
 
         # Encode data to latent space.
-        z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
+        # z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
+        z_x_mu_cond, z_x_sigma_cond, z_h_mu_cond, z_h_sigma_cond = self.vae.encode(x, h, node_mask, edge_mask, context)
+        masked_context = None
+        z_x_mu_uncond, z_x_sigma_uncond, z_h_mu_uncond, z_h_sigma_uncond = self.vae.encode(x, h, node_mask, edge_mask, masked_context)
+        z_x_mu = z_x_mu_cond * (1 + self.w) - (self.w) * z_x_mu_uncond
+        z_x_sigma = z_x_sigma_cond * (1 + self.w) - (self.w) * z_x_sigma_uncond
+        z_h_mu = z_h_mu_cond * (1 + self.w) - (self.w) * z_h_mu_uncond
+        z_h_sigma = z_h_sigma_cond * (1 + self.w) - (self.w) * z_h_sigma_uncond
+        
         # Compute fixed sigma values.
         t_zeros = torch.zeros(size=(x.size(0), 1), device=x.device)
         gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x)
