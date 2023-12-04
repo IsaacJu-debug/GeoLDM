@@ -44,6 +44,8 @@ def get_model(args, device, dataset_info, dataloader_train):
             norm_values=args.normalize_factors,
             include_charges=args.include_charges,
             classifier_free_guidance=args.classifier_free_guidance,
+            guidance_weight=args.guidance_weight,
+            class_drop_prob=args.class_drop_prob,
             )
 
         return vdm, nodes_dist, prop_dist
@@ -160,7 +162,8 @@ def get_latent_diffusion(args, device, dataset_info, dataloader_train):
             norm_values=args.normalize_factors,
             include_charges=args.include_charges,
             classifier_free_guidance=args.classifier_free_guidance,
-            classifier_weight=args.classifier_weight
+            guidance_weight=args.guidance_weight,
+            class_drop_prob=args.class_drop_prob,
             )
 
         return vdm, nodes_dist, prop_dist

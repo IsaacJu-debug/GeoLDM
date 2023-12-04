@@ -37,6 +37,8 @@ parser.add_argument('--classifier_free_guidance', action='store_true',
                     help='Train LatentDiffusionModel model with classifier-free guidance')
 parser.add_argument('--guidance_weight', type=float, default=1, 
                     help='Classifier-free guidance weight')
+parser.add_argument('--class_drop_prob', type=float, default=0.1, 
+                    help='Classifier property dropout probability')
 # VAE args
 parser.add_argument('--latent_nf', type=int, default=4,
                     help='number of latent features')

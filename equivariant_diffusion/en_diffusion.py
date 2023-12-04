@@ -9,6 +9,11 @@ from equivariant_diffusion import utils as diffusion_utils
 
 
 # Defining some useful util functions.
+def mask_context(context: torch.Tensor, p_class_drop: float):
+    indices_to_mask = torch.randperm(context.size(0))[:int(context.size(0) * p_class_drop)]
+    context[indices_to_mask, :, :] = torch.zeros_like(context[indices_to_mask, :, :])
+    return context
+
 def expm1(x: torch.Tensor) -> torch.Tensor:
     return torch.expm1(x)
 
@@ -486,11 +491,11 @@ class EnVariationalDiffusion(torch.nn.Module):
         gamma_0 = self.gamma(zeros)
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
-        net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
-        # net_out1 = self.phi(z0, zeros, node_mask, edge_mask, context)
-        # z0_masked = z0
-        # z0_masked[]
-        # net_out2 = self.phi(z0, zeros, node_mask, edge_mask, context)
+        masked_context = torch.zeros_like(context)
+        if self.classifier_free_guidance:
+            net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - self.w * self.phi(z0, zeros, node_mask, edge_mask, masked_context)
+        else:
+            net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         mu_x = self.compute_x_pred(net_out, z0, gamma_0)
@@ -735,7 +740,11 @@ class EnVariationalDiffusion(torch.nn.Module):
         sigma_t = self.sigma(gamma_t, target_tensor=zt)
 
         # Neural net prediction.
-        eps_t = self.phi(zt, t, node_mask, edge_mask, context)
+        masked_context = torch.zeros_like(context)
+        if self.classifier_free_guidance:
+            eps_t = (1 + self.w) * self.phi(zt, t, node_mask, edge_mask, context) - self.w * self.phi(zt, t, node_mask, edge_mask, masked_context)
+        else:
+            eps_t = self.phi(zt, t, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         diffusion_utils.assert_mean_zero_with_mask(zt[:, :, :self.n_dims], node_mask)
@@ -1111,7 +1120,12 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         gamma_0 = self.gamma(zeros)
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
-        net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
+        
+        masked_context = torch.zeros_like(context)
+        if self.classifier_free_guidance:
+            net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - self.w * self.phi(z0, zeros, node_mask, edge_mask, masked_context)
+        else:
+            net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
 
         # Compute mu for p(zs | zt).
         mu_x = self.compute_x_pred(net_out, z0, gamma_0)
@@ -1147,14 +1161,10 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
         if self.classifier_guidance: 
-            indices_to_mask = torch.randperm(context.size(0))[:int(context.size(0) * self.p_class_drop)]
-            context[indices_to_mask, :, :] = torch.zeros_like(context[indices_to_mask, :, :])
+            context = mask_context(context, self.p_class_drop)
         # Encode data to latent space.
         z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
-<<<<<<< Updated upstream
-=======
     
->>>>>>> Stashed changes
         # Compute fixed sigma values.
         t_zeros = torch.zeros(size=(x.size(0), 1), device=x.device)
         gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x)
