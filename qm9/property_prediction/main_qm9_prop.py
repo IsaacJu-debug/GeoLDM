@@ -165,6 +165,7 @@ if __name__ == "__main__":
     parser.add_argument('--model_name', type=str, default='numnodes', metavar='N',
                         help='egnn | naive | numnodes')
     parser.add_argument('--save_model', type=eval, default=True)
+    parser.add_argument('--dataset_portion', type=float, default=0.1)
 
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
