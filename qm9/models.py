@@ -42,7 +42,8 @@ def get_model(args, device, dataset_info, dataloader_train):
             noise_precision=args.diffusion_noise_precision,
             loss_type=args.diffusion_loss_type,
             norm_values=args.normalize_factors,
-            include_charges=args.include_charges
+            include_charges=args.include_charges,
+            classifier_free_guidance=args.classifier_free_guidance,
             )
 
         return vdm, nodes_dist, prop_dist
@@ -157,7 +158,9 @@ def get_latent_diffusion(args, device, dataset_info, dataloader_train):
             noise_precision=args.diffusion_noise_precision,
             loss_type=args.diffusion_loss_type,
             norm_values=args.normalize_factors,
-            include_charges=args.include_charges
+            include_charges=args.include_charges,
+            classifier_free_guidance=args.classifier_free_guidance,
+            classifier_weight=args.classifier_weight
             )
 
         return vdm, nodes_dist, prop_dist

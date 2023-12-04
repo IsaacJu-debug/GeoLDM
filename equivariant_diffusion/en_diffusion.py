@@ -261,7 +261,8 @@ class EnVariationalDiffusion(torch.nn.Module):
             dynamics: models.EGNN_dynamics_QM9, in_node_nf: int, n_dims: int,
             timesteps: int = 1000, parametrization='eps', noise_schedule='learned',
             noise_precision=1e-4, loss_type='vlb', norm_values=(1., 1., 1.),
-            norm_biases=(None, 0., 0.), include_charges=True):
+            norm_biases=(None, 0., 0.), include_charges=True, classifier_free_guidance=False,
+            classifier_weight=1, class_drop_prob = 0.1):
         super().__init__()
 
         assert loss_type in {'vlb', 'l2'}
@@ -296,6 +297,10 @@ class EnVariationalDiffusion(torch.nn.Module):
 
         if noise_schedule != 'learned':
             self.check_issues_norm_values()
+
+        self.w = classifier_weight
+        self.classifier_free_guidance = classifier_free_guidance
+        self.p_class_drop = class_drop_prob
 
     def check_issues_norm_values(self, num_stdevs=8):
         zeros = torch.zeros((1, 1))
@@ -1141,9 +1146,15 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
-
+        if self.classifier_guidance: 
+            indices_to_mask = torch.randperm(context.size(0))[:int(context.size(0) * self.p_class_drop)]
+            context[indices_to_mask, :, :] = torch.zeros_like(context[indices_to_mask, :, :])
         # Encode data to latent space.
         z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
         # Compute fixed sigma values.
         t_zeros = torch.zeros(size=(x.size(0), 1), device=x.device)
         gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x)
