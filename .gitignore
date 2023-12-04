@@ -34,3 +34,5 @@ notebooks/*
 qm9/.ipynb_checkpoints/
 qm9/data/prepare/.ipynb_checkpoints/
 egnn/.ipynb_checkpoints/
+qm9/data/.ipynb_checkpoints/
+
