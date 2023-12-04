@@ -491,8 +491,9 @@ class EnVariationalDiffusion(torch.nn.Module):
         gamma_0 = self.gamma(zeros)
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
-        masked_context = torch.zeros_like(context)
+        
         if self.classifier_guidance:
+            masked_context = torch.zeros_like(context)
             net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - self.w * self.phi(z0, zeros, node_mask, edge_mask, masked_context)
         else:
             net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
@@ -740,8 +741,8 @@ class EnVariationalDiffusion(torch.nn.Module):
         sigma_t = self.sigma(gamma_t, target_tensor=zt)
 
         # Neural net prediction.
-        masked_context = torch.zeros_like(context)
         if self.classifier_guidance:
+            masked_context = torch.zeros_like(context)
             eps_t = (1 + self.w) * self.phi(zt, t, node_mask, edge_mask, context) - self.w * self.phi(zt, t, node_mask, edge_mask, masked_context)
         else:
             eps_t = self.phi(zt, t, node_mask, edge_mask, context)
@@ -1121,8 +1122,8 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         # Computes sqrt(sigma_0^2 / alpha_0^2)
         sigma_x = self.SNR(-0.5 * gamma_0).unsqueeze(1)
         
-        masked_context = torch.zeros_like(context)
         if self.classifier_guidance:
+            masked_context = torch.zeros_like(context)
             net_out = (1 + self.w) * self.phi(z0, zeros, node_mask, edge_mask, context) - self.w * self.phi(z0, zeros, node_mask, edge_mask, masked_context)
         else:
             net_out = self.phi(z0, zeros, node_mask, edge_mask, context)
