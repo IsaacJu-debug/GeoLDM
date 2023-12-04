@@ -11,6 +11,8 @@ def retrieve_dataloaders(cfg):
         batch_size = cfg.batch_size
         num_workers = cfg.num_workers
         filter_n_atoms = cfg.filter_n_atoms
+        if 'dataset_portion' not in cfg:
+            cfg['dataset_portion'] = 0.1
         # Initialize dataloader
         args = init_argparse('qm9', cfg.dataset_portion)
         # data_dir = cfg.data_root_dir
