@@ -13,7 +13,7 @@ def retrieve_dataloaders(cfg):
         num_workers = cfg.num_workers
         filter_n_atoms = cfg.filter_n_atoms
         # Initialize dataloader
-        pdb.set_trace()
+        #pdb.set_trace()
         args = init_argparse('qm9', dataset_split=cfg.dataset_portion)
         # data_dir = cfg.data_root_dir
         args, datasets, num_species, charge_scale = initialize_datasets(args, cfg.datadir, cfg.dataset,
