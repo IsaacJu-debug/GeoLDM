@@ -153,7 +153,7 @@ def js_divergence(h1, h2):
     return js
 
 
-def main_analyze_qm9(remove_h: bool, dataset_name='qm9', n_atoms=None, dataset_portion=1.0):
+def main_analyze_qm9(remove_h: bool, dataset_name='qm9', n_atoms=None, dataset_portion=0.10):
     class DataLoaderConfig(object):
         def __init__(self):
             self.batch_size = 128
@@ -165,7 +165,7 @@ def main_analyze_qm9(remove_h: bool, dataset_name='qm9', n_atoms=None, dataset_p
             self.datadir = 'qm9/temp'
             self.dataset_portion = dataset_portion
             
-        def set_arg_input(self, dataset_portion=1.0):
+        def set_arg_input(self, dataset_portion=0.10):
             self.dataset_portion = dataset_portion
 
     cfg = DataLoaderConfig()
@@ -263,7 +263,7 @@ def process_loader(dataloader):
     return out
 
 
-def main_check_stability(remove_h: bool, batch_size=32, dataset_portion=1.0):
+def main_check_stability(remove_h: bool, batch_size=32, dataset_portion=0.10):
     from configs import datasets_config
     import qm9.dataset as dataset
 
@@ -278,9 +278,9 @@ def main_check_stability(remove_h: bool, batch_size=32, dataset_portion=1.0):
             self.include_charges = True
             self.filter_molecule_size = None
             self.sequential = False
-            self.dataset_portion = 1.0
+            self.dataset_portion = dataset_portion
         
-        def set_arg_input(self, dataset_portion=1.0):
+        def set_arg_input(self, dataset_portion=0.10):
             self.dataset_portion = dataset_portion
 
     cfg = Config()
