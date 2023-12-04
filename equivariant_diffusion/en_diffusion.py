@@ -267,7 +267,7 @@ class EnVariationalDiffusion(torch.nn.Module):
             timesteps: int = 1000, parametrization='eps', noise_schedule='learned',
             noise_precision=1e-4, loss_type='vlb', norm_values=(1., 1., 1.),
             norm_biases=(None, 0., 0.), include_charges=True, classifier_free_guidance=False,
-            classifier_weight=1, class_drop_prob = 0.1):
+            guidance_weight=1, class_drop_prob = 0.1):
         super().__init__()
 
         assert loss_type in {'vlb', 'l2'}
@@ -303,7 +303,7 @@ class EnVariationalDiffusion(torch.nn.Module):
         if noise_schedule != 'learned':
             self.check_issues_norm_values()
 
-        self.w = classifier_weight
+        self.w = guidance_weight
         self.classifier_free_guidance = classifier_free_guidance
         self.p_class_drop = class_drop_prob
 
