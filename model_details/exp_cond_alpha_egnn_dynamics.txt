@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
      Layer.Parameter         Param Tensor Shape         Param #
 ----------------------------------------------------------------
-         gamma.gamma                     [1001]            1001
+         gamma.gamma                       [11]              11
 dynamics.egnn.embedding.weight                   [192, 3]             576
 dynamics.egnn.embedding.bias                      [192]             192
 dynamics.egnn.embedding_out.weight                   [3, 192]             576
@@ -304,6 +304,6 @@ vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.2.weight                 [192, 19
 vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.2.bias                      [192]             192
 vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.4.weight                   [1, 192]             192
 ----------------------------------------------------------------
-Total params: 6427463
+Total params: 6426473
 Trainable params: 6426462
-Non-trainable params: 1001
+Non-trainable params: 11

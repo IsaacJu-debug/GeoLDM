@@ -17,3 +17,5 @@ my_system=$(hostname | cut -d'.' -f1)
 echo "jupyter lab --no-browser --port=5115 --ip=$my_system"
 
 echo "ssh -L 127.0.0.1:5115:$my_system:5115 ju1@login.sherlock.stanford.edu" 
+
+alias machine="hostname | cut -d'.' -f1"
