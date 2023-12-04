@@ -5,6 +5,7 @@ from qm9.data.utils import initialize_datasets
 import torch
 import os
 import numpy as np
+import pdb
 
 def retrieve_dataloaders(cfg):
     if 'qm9' in cfg.dataset:
@@ -12,7 +13,8 @@ def retrieve_dataloaders(cfg):
         num_workers = cfg.num_workers
         filter_n_atoms = cfg.filter_n_atoms
         # Initialize dataloader
-        args = init_argparse('qm9', cfg.dataset_portion)
+        pdb.set_trace()
+        args = init_argparse('qm9', dataset_split=cfg.dataset_portion)
         # data_dir = cfg.data_root_dir
         args, datasets, num_species, charge_scale = initialize_datasets(args, cfg.datadir, cfg.dataset,
                                                                         subtract_thermo=args.subtract_thermo,
