@@ -191,7 +191,7 @@ if args.no_wandb:
 else:
     mode = 'online' if args.online else 'offline'
 kwargs = {'entity': args.wandb_usr, 'name': args.exp_name + '_' + args.dataset + '_' +\
-                     args.model + '_splitRatio_' + str(args.dataset_portion),
+                     args.model + '_splitRatio_' + str(args.dataset_portion) + '_guidence_weights_' + str(args.guidance_weight),
           'project': 'e3_diffusion_qm9', 'config': args,
           'settings': wandb.Settings(_disable_stats=False), 'reinit': True, 'mode': mode}
 wandb.init(**kwargs)
