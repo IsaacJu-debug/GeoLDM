@@ -12,7 +12,7 @@ def retrieve_dataloaders(cfg):
         num_workers = cfg.num_workers
         filter_n_atoms = cfg.filter_n_atoms
         # Initialize dataloader
-        args = init_argparse('qm9')
+        args = init_argparse('qm9', cfg.dataset_portion)
         # data_dir = cfg.data_root_dir
         args, datasets, num_species, charge_scale = initialize_datasets(args, cfg.datadir, cfg.dataset,
                                                                         subtract_thermo=args.subtract_thermo,
@@ -32,7 +32,8 @@ def retrieve_dataloaders(cfg):
         for split in datasets.keys():
             dataset_size = len(datasets[split])
             indices = list(range(dataset_size))
-            subset_indices = np.random.choice(indices, size=dataset_size // 4, replace=False)
+            print(dataset_size)
+            subset_indices = np.random.choice(indices, size=int(dataset_size * args.dataset_portion), replace=False)
             datasets[split] = torch.utils.data.Subset(datasets[split], subset_indices)
 
         # Construct PyTorch dataloaders from datasets

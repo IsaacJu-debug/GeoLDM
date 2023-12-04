@@ -1,3 +1,4 @@
+import pdb 
 import argparse
 
 from math import inf
@@ -271,7 +272,7 @@ class Range(object):
         return self.start <= other <= self.end
 
 
-def init_argparse(dataset):
+def init_argparse(dataset, dataset_split=0.5):
     """
     Reads in the arguments for the script for a given dataset.
 
@@ -286,10 +287,10 @@ def init_argparse(dataset):
         Namespace with a dictionary of arguments where the key is the name of
         the argument and the item is the input value.
     """
-
     parser = setup_argparse(dataset)
     args = parser.parse_args([])
     d = vars(args)
     d['dataset'] = dataset
+    d['dataset_portion'] = dataset_split
 
     return args

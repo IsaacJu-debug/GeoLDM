@@ -10,8 +10,10 @@ from equivariant_diffusion import utils as diffusion_utils
 
 # Defining some useful util functions.
 def mask_context(context: torch.Tensor, p_class_drop: float):
-    indices_to_mask = torch.randperm(context.size(0))[:int(context.size(0) * p_class_drop)]
-    context[indices_to_mask, :, :] = torch.zeros_like(context[indices_to_mask, :, :])
+    bs, nodes, cs = context.size()
+    for dim in range(cs): # supports masking for any number of properties
+        indices_to_mask = torch.randperm(bs)[:int(context.size(0) * p_class_drop)]
+        context[indices_to_mask, :, dim] = torch.zeros_like(context[indices_to_mask, :, dim])
     return context
 
 def expm1(x: torch.Tensor) -> torch.Tensor:
