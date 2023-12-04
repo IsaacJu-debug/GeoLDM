@@ -1138,22 +1138,12 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         return log_p_xh_given_z
     
     def forward(self, x, h, node_mask=None, edge_mask=None, context=None):
-        self._forward(x,h,node_mask,edge_mask, context)
-    def _forward(self, x, h, node_mask=None, edge_mask=None, context=None):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
 
         # Encode data to latent space.
-        # z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
-        z_x_mu_cond, z_x_sigma_cond, z_h_mu_cond, z_h_sigma_cond = self.vae.encode(x, h, node_mask, edge_mask, context)
-        masked_context = None
-        z_x_mu_uncond, z_x_sigma_uncond, z_h_mu_uncond, z_h_sigma_uncond = self.vae.encode(x, h, node_mask, edge_mask, masked_context)
-        z_x_mu = z_x_mu_cond * (1 + self.w) - (self.w) * z_x_mu_uncond
-        z_x_sigma = z_x_sigma_cond * (1 + self.w) - (self.w) * z_x_sigma_uncond
-        z_h_mu = z_h_mu_cond * (1 + self.w) - (self.w) * z_h_mu_uncond
-        z_h_sigma = z_h_sigma_cond * (1 + self.w) - (self.w) * z_h_sigma_uncond
-        
+        z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
         # Compute fixed sigma values.
         t_zeros = torch.zeros(size=(x.size(0), 1), device=x.device)
         gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), x)
