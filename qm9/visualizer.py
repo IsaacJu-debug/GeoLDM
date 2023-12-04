@@ -413,7 +413,8 @@ if __name__ == '__main__':
             dataset = 'qm9'
             remove_h = False
             include_charges = True
-
+            dataset_portion = 0.10
+            
         cfg = Args()
 
         dataloaders, charge_scale = dataset.retrieve_dataloaders(cfg)

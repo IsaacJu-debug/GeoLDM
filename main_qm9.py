@@ -191,7 +191,7 @@ if args.no_wandb:
 else:
     mode = 'online' if args.online else 'offline'
 kwargs = {'entity': args.wandb_usr, 'name': args.exp_name + '_' + args.dataset + '_' +\
-                     args.model + '_splitRatio_' + str(args.dataset_portion),
+                     args.model + '_splitRatio_' + str(args.dataset_portion) + '_guidence_weights_' + str(args.guidance_weight),
           'project': 'e3_diffusion_qm9', 'config': args,
           'settings': wandb.Settings(_disable_stats=False), 'reinit': True, 'mode': mode}
 wandb.init(**kwargs)
@@ -201,7 +201,7 @@ wandb.save('*.txt')
 if len(args.conditioning) > 0:
     args.dataset_portion = args.dataset_portion * 2
 
-dataloaders, charge_scale = dataset.retrieve_dataloaders(args, )
+dataloaders, charge_scale = dataset.retrieve_dataloaders(args)
 
 data_dummy = next(iter(dataloaders['train']))
 
