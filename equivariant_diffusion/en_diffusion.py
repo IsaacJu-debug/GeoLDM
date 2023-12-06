@@ -1163,8 +1163,9 @@ class EnLatentDiffusion(EnVariationalDiffusion):
         """
         Computes the loss (type l2 or NLL) if training. And if eval then always computes NLL.
         """
-        if self.classifier_guidance: 
+        if self.classifier_guidance and self.training:
             context = mask_context(context, self.p_class_drop)
+
         # Encode data to latent space.
         z_x_mu, z_x_sigma, z_h_mu, z_h_sigma = self.vae.encode(x, h, node_mask, edge_mask, context)
     
