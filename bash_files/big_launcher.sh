@@ -53,12 +53,14 @@ if [ "$MODE" == "1" ]; then
     if [ "$EVAL_FLAG" -ne 1 ]; then
         python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTY --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --dataset_portion $DATASET_PORTION --test_epochs $TEST_EPOCHS --classifier_free_guidance
     fi
-    python eval_conditional_qm9.py --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$PROPERTY --property $PROPERTY  --iterations 100  --batch_size 100 --task edm --use_wandb
+    WANDB_NAME="eval_${EXP_NAME}"
+    python eval_conditional_qm9.py --exp_name $WANDB_NAME  --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$PROPERTY --property $PROPERTY  --iterations 100  --batch_size 100 --task edm --use_wandb
 elif [ "$MODE" == "2" ]; then
     if [ "$EVAL_FLAG" -ne 1 ]; then
         python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTY --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --dataset_portion $DATASET_PORTION --test_epochs $TEST_EPOCHS
     fi
-    python eval_conditional_qm9.py --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$PROPERTY --property $PROPERTY  --iterations 20  --batch_size 100 --task edm --use_wandb
+    WANDB_NAME="eval_${EXP_NAME}"
+    python eval_conditional_qm9.py --exp_name $WANDB_NAME  --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$PROPERTY --property $PROPERTY  --iterations 20  --batch_size 100 --task edm --use_wandb
 elif [ "$MODE" == "3" ]; then
     python main_qm9.py --exp_name $EXP_NAME --n_epochs $EPOCHS --test_epochs $TEST_EPOCHS --n_stability_samples 50 --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --diffusion_steps 1000 --diffusion_loss_type l2 --batch_size $BATCH_SIZE --nf 256 --n_layers 9 --lr 2e-4 --normalize_factors [1,4,10] --ema_decay 0.9 --train_diffusion --trainable_ae --model $MODEL --trainable_ae --latent_nf 1 --exp_name qm9_uncon --dataset_portion $DATASET_PORTION
 elif [ "$MODE" == "4" ]; then
@@ -81,7 +83,8 @@ elif [ "$MODE" == "5" ]; then
         python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTIES --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --classifier_free_guidance --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --test_epochs $TEST_EPOCHS --dataset_portion $DATASET_PORTION
     fi
     for prop in ${PROPERTY[@]}; do
-        python eval_conditional_qm9.py --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$prop --property $prop --iterations 20 --batch_size 100 --task edm --use_wandb --use_multiprop
+        WANDB_NAME="eval_${EXP_NAME}"
+        python eval_conditional_qm9.py --exp_name $WANDB_NAME --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$prop --property $prop --iterations 20 --batch_size 100 --task edm --use_wandb --use_multiprop
     done
 elif [ "$MODE" == "6" ]; then
     PROPERTIES="${PROPERTY[@]}"
@@ -100,6 +103,7 @@ elif [ "$MODE" == "6" ]; then
         python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTIES --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --test_epochs $TEST_EPOCHS --dataset_portion $DATASET_PORTION
     fi
     for prop in ${PROPERTY[@]}; do
-        python eval_conditional_qm9.py --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$prop --property $prop --iterations 20 --batch_size 100 --task edm  --use_wandb --use_multiprop
+        WANDB_NAME="eval_${EXP_NAME}"
+        python eval_conditional_qm9.py --exp_name $WANDB_NAME --generators_path outputs/$EXP_NAME --classifiers_path qm9/property_prediction/outputs/exp_class_$prop --property $prop --iterations 20 --batch_size 100 --task edm  --use_wandb --use_multiprop
     done
 fi

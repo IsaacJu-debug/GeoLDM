@@ -226,7 +226,7 @@ if __name__ == "__main__":
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     device = torch.device("cuda" if args.cuda else "cpu")
     args.device = device
-
+    
     if args.task == 'qualitative':
         main_qualitative(args)
     else:
