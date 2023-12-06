@@ -1,0 +1,309 @@
+----------------------------------------------------------------
+     Layer.Parameter         Param Tensor Shape         Param #
+----------------------------------------------------------------
+         gamma.gamma                     [1001]            1001
+dynamics.egnn.embedding.weight                   [256, 2]             512
+dynamics.egnn.embedding.bias                      [256]             256
+dynamics.egnn.embedding_out.weight                   [2, 256]             512
+dynamics.egnn.embedding_out.bias                        [2]               2
+dynamics.egnn.e_block_0.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_0.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_0.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_0.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_0.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_0.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_0.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_0.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_0.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_0.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_1.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_1.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_1.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_1.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_1.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_1.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_1.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_1.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_1.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_1.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_2.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_2.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_2.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_2.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_2.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_2.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_2.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_2.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_2.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_2.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_3.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_3.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_3.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_3.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_3.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_3.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_3.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_3.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_3.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_3.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_4.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_4.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_4.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_4.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_4.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_4.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_4.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_4.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_4.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_4.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_5.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_5.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_5.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_5.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_5.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_5.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_5.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_5.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_5.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_5.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_6.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_6.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_6.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_6.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_6.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_6.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_6.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_6.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_6.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_6.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_7.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_7.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_7.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_7.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_7.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_7.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_7.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_7.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_7.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_7.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+dynamics.egnn.e_block_8.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_8.gcl_0.edge_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_8.gcl_0.edge_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+dynamics.egnn.e_block_8.gcl_0.node_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_8.gcl_0.node_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_0.att_mlp.0.weight                   [1, 256]             256
+dynamics.egnn.e_block_8.gcl_0.att_mlp.0.bias                        [1]               1
+dynamics.egnn.e_block_8.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+dynamics.egnn.e_block_8.gcl_equiv.coord_mlp.0.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+dynamics.egnn.e_block_8.gcl_equiv.coord_mlp.2.bias                      [256]             256
+dynamics.egnn.e_block_8.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.encoder.egnn.embedding.weight                   [256, 6]            1536
+vae.encoder.egnn.embedding.bias                      [256]             256
+vae.encoder.egnn.embedding_out.weight                 [256, 256]           65536
+vae.encoder.egnn.embedding_out.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.encoder.egnn.e_block_0.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.encoder.egnn.e_block_0.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.encoder.egnn.e_block_0.gcl_0.node_mlp.0.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.encoder.egnn.e_block_0.gcl_0.node_mlp.2.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.encoder.egnn.e_block_0.gcl_0.att_mlp.0.bias                        [1]               1
+vae.encoder.egnn.e_block_0.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.encoder.egnn.e_block_0.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.encoder.egnn.e_block_0.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.encoder.egnn.e_block_0.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.encoder.final_mlp.0.weight                 [256, 256]           65536
+vae.encoder.final_mlp.0.bias                      [256]             256
+vae.encoder.final_mlp.2.weight                   [3, 256]             768
+vae.encoder.final_mlp.2.bias                        [3]               3
+vae.decoder.egnn.embedding.weight                   [256, 1]             256
+vae.decoder.egnn.embedding.bias                      [256]             256
+vae.decoder.egnn.embedding_out.weight                   [6, 256]            1536
+vae.decoder.egnn.embedding_out.bias                        [6]               6
+vae.decoder.egnn.e_block_0.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_0.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_0.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_0.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_0.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_0.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_0.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_0.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_0.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_0.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_1.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_1.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_1.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_1.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_1.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_1.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_1.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_1.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_1.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_1.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_2.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_2.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_2.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_2.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_2.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_2.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_2.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_2.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_2.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_2.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_3.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_3.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_3.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_3.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_3.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_3.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_3.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_3.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_3.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_3.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_4.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_4.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_4.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_4.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_4.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_4.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_4.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_4.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_4.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_4.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_5.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_5.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_5.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_5.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_5.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_5.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_5.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_5.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_5.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_5.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_6.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_6.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_6.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_6.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_6.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_6.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_6.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_6.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_6.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_6.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_7.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_7.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_7.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_7.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_7.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_7.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_7.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_7.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_7.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_7.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_8.gcl_0.edge_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_8.gcl_0.edge_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_0.edge_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_8.gcl_0.edge_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_0.node_mlp.0.weight                 [256, 512]          131072
+vae.decoder.egnn.e_block_8.gcl_0.node_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_0.node_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_8.gcl_0.node_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_0.att_mlp.0.weight                   [1, 256]             256
+vae.decoder.egnn.e_block_8.gcl_0.att_mlp.0.bias                        [1]               1
+vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.0.weight                 [256, 514]          131584
+vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.0.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.2.weight                 [256, 256]           65536
+vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.2.bias                      [256]             256
+vae.decoder.egnn.e_block_8.gcl_equiv.coord_mlp.4.weight                   [1, 256]             256
+----------------------------------------------------------------
+Total params: 11403527
+Trainable params: 11402526
+Non-trainable params: 1001

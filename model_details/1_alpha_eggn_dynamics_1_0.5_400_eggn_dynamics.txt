@@ -1,0 +1,12 @@
+----------------------------------------------------------------
+     Layer.Parameter         Param Tensor Shape         Param #
+----------------------------------------------------------------
+         gamma.gamma                     [1001]            1001
+vae.encoder.final_mlp.0.weight                 [192, 192]           36864
+vae.encoder.final_mlp.0.bias                      [192]             192
+vae.encoder.final_mlp.2.weight                   [3, 192]             576
+vae.encoder.final_mlp.2.bias                        [3]               3
+----------------------------------------------------------------
+Total params: 38636
+Trainable params: 37635
+Non-trainable params: 1001

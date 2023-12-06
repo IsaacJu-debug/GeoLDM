@@ -5,6 +5,11 @@
 #SBATCH --time=06:00:00
 #SBATCH --gres=gpu:1
 
+if [ "$#" -ne 8 ]; then
+    echo "Usage: $0 <MODEL> <GUIDANCE_WEIGHT> <DROP_PROB> <DATASET_PORTION> <PROPERTY> <EPOCHS> <TEST_EPOCHS> <MODE>"
+    exit 1
+fi
+
 # Change to the desired directory
 cd /scratch/users/ju1/02_course_projects/01_CS236/GeoLDM
 
