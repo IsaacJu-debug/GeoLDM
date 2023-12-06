@@ -60,7 +60,17 @@ elif [ "$MODE" == "4" ]; then
     python main_qm9.py --exp_name $EXP_NAME --n_epochs $EPOCHS --test_epochs $TEST_EPOCHS --n_stability_samples 50 --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --diffusion_steps 1000 --diffusion_loss_type l2 --batch_size $BATCH_SIZE --nf 256 --n_layers 9 --lr 2e-4 --normalize_factors [1,4,10] --ema_decay 0.9 --train_diffusion --trainable_ae --model egnn_dynamics --trainable_ae --latent_nf 1 --exp_name qm9_uncon --dataset_portion $DATASET_PORTION
 elif [ "$MODE" == "5" ]; then
     PROPERTIES="${PROPERTY[@]}"
-    EXP_NAME="${MODE}_${PROPERTIES}_${MODEL}_${GUIDANCE_WEIGHT}_${DATASET_PORTION}_${EPOCHS}"
+    JOINED_PROPERTIES=""
+    for item in "${PROPERTY[@]}"; do
+        # Append the item to the string, followed by an underscore
+        # If JOINED_PROPERTIES is not empty, add an underscore before the item
+        if [ -n "$JOINED_PROPERTIES" ]; then
+            JOINED_PROPERTIES="${JOINED_PROPERTIES}_$item"
+        else
+            JOINED_PROPERTIES="$item"
+        fi
+    done
+    EXP_NAME="${MODE}_${JOINED_PROPERTIES}_${MODEL}_${GUIDANCE_WEIGHT}_${DATASET_PORTION}_${EPOCHS}"
     echo "python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTIES --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --classifier_free_guidance --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --test_epochs $TEST_EPOCHS --dataset_portion $DATASET_PORTION"
     python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTIES --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --classifier_free_guidance --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --test_epochs $TEST_EPOCHS --dataset_portion $DATASET_PORTION
     for prop in ${PROPERTY[@]}; do
@@ -68,6 +78,17 @@ elif [ "$MODE" == "5" ]; then
     done
 elif [ "$MODE" == "6" ]; then
     PROPERTIES="${PROPERTY[@]}"
+    JOINED_PROPERTIES=""
+    for item in "${PROPERTY[@]}"; do
+        # Append the item to the string, followed by an underscore
+        # If JOINED_PROPERTIES is not empty, add an underscore before the item
+        if [ -n "$JOINED_PROPERTIES" ]; then
+            JOINED_PROPERTIES="${JOINED_PROPERTIES}_$item"
+        else
+            JOINED_PROPERTIES="$item"
+        fi
+    done
+    EXP_NAME="${MODE}_${JOINED_PROPERTIES}_${MODEL}_${GUIDANCE_WEIGHT}_${DATASET_PORTION}_${EPOCHS}"
     EXP_NAME="${MODE}_${PROPERTIES}_${MODEL}_${GUIDANCE_WEIGHT}_${DATASET_PORTION}_${EPOCHS}"
     python main_qm9.py --exp_name $EXP_NAME --model $MODEL --lr 2e-4 --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs $EPOCHS --n_stability_samples $STABILITY_SAMPLES --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size $BATCH_SIZE --normalize_factors [1,8,1] --conditioning $PROPERTIES --dataset qm9_second_half --train_diffusion --trainable_ae --latent_nf 1 --guidance_weight $GUIDANCE_WEIGHT --class_drop_prob $DROP_PROB --test_epochs $TEST_EPOCHS --dataset_portion $DATASET_PORTION
     for prop in ${PROPERTY[@]}; do
