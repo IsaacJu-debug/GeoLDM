@@ -91,7 +91,6 @@ class DiffusionDataloader:
         diag_mask = diag_mask.to(self.device)
         edge_mask *= diag_mask
         edge_mask = edge_mask.view(bs * n_nodes * n_nodes, 1)
-
         prop_key = self.prop_dist.properties[0]
         if self.unkown_labels:
             context[:] = self.prop_dist.normalizer[prop_key]['mean']
@@ -150,12 +149,13 @@ def main_quantitative(args):
         diffusion_dataloader = DiffusionDataloader(args_gen, model, nodes_dist, prop_dist,
                                                    args.device, batch_size=args.batch_size, iterations=args.iterations)
         print("EDM: We evaluate the classifier on our generated samples")
-        loss = test(classifier, 0, diffusion_dataloader, mean, mad, args.property, args.device, 1, args.debug_break)
+        loss = test(classifier, 0, diffusion_dataloader, mean, mad, args.property, args.device, 1, args.debug_break, 
+                    args.use_wandb, args.exp_name)
         print("Loss classifier on Generated samples: %.4f" % loss)
     elif args.task == 'qm9_second_half':
         print("qm9_second_half: We evaluate the classifier on QM9")
         loss = test(classifier, 0, dataloaders['train'], mean, mad, args.property, args.device, args.log_interval,
-                    args.debug_break)
+                    args.debug_break, args.use_wandb, args.exp_name)
         print("Loss classifier on qm9_second_half: %.4f" % loss)
     elif args.task == 'naive':
         print("Naive: We evaluate the classifier on QM9")
@@ -163,7 +163,7 @@ def main_quantitative(args):
         idxs = torch.randperm(length)
         dataloaders['train'].dataset.data[args.property] = dataloaders['train'].dataset.data[args.property][idxs]
         loss = test(classifier, 0, dataloaders['train'], mean, mad, args.property, args.device, args.log_interval,
-                    args.debug_break)
+                    args.debug_break, args.use_wandb, args.exp_name)
         print("Loss classifier on naive: %.4f" % loss)
     #elif args.task == 'numnodes':
     #    print("Numnodes: We evaluate the numnodes classifier on EDM samples")
@@ -220,6 +220,7 @@ if __name__ == "__main__":
                         help='naive, edm, qm9_second_half, qualitative')
     parser.add_argument('--n_sweeps', type=int, default=10,
                         help='number of sweeps for the qualitative conditional experiment')
+    parser.add_argument('--use_wandb', action='store_true', help='Enable wandb logging of classifier')
 
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()

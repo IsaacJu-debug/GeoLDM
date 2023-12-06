@@ -8,11 +8,21 @@ from qm9.property_prediction import prop_utils
 import json
 from qm9 import dataset, utils
 import pickle
+import wandb
+from utils import get_wandb_username
+import pdb
 
 loss_l1 = nn.L1Loss()
 
 
-def train(model, epoch, loader, mean, mad, property, device, partition='train', optimizer=None, lr_scheduler=None, log_interval=20, debug_break=False):
+def train(model, epoch, loader, mean, mad, property, device, partition='train', optimizer=None, lr_scheduler=None, log_interval=20, debug_break=False, use_wandb=False, exp_name="multi_prop_test"):
+    #args.wandb_usr = get_wandb_username(args.wandb_usr)
+    if use_wandb:
+        kwargs = {'name': exp_name, 'project': 'e3_diffusion_qm9', #'entity': args.wandb_usr,
+          'settings': wandb.Settings(_disable_stats=False), 'reinit': True}
+        wandb.init(**kwargs)
+        #wandb.save('*.txt')
+    
     if partition == 'train':
         lr_scheduler.step()
     res = {'loss': 0, 'counter': 0, 'loss_arr':[]}
@@ -31,7 +41,6 @@ def train(model, epoch, loader, mean, mad, property, device, partition='train', 
         nodes = data['one_hot'].to(device, torch.float32)
         #charges = data['charges'].to(device, dtype).squeeze(2)
         #nodes = prop_utils.preprocess_input(one_hot, charges, args.charge_power, charge_scale, device)
-
         nodes = nodes.view(batch_size * n_nodes, -1)
         # nodes = torch.cat([one_hot, charges], dim=1)
         edges = prop_utils.get_adj_matrix(n_nodes, batch_size, device)
@@ -65,24 +74,22 @@ def train(model, epoch, loader, mean, mad, property, device, partition='train', 
         pred = model(h0=nodes, x=atom_positions, edges=edges, edge_attr=None, node_mask=atom_mask, edge_mask=edge_mask,
                      n_nodes=n_nodes)
 
-
-        # print("\nPred mean")
-        # print(torch.mean(torch.abs(pred)))
-        # print("Pred max")
-        # print(torch.max(pred))
-        # print("Pred min")
-        # print(torch.min(pred))
-
         if partition == 'train':
             loss = loss_l1(pred, (label - mean) / mad)
             loss.backward()
             optimizer.step()
         else:
-            loss = loss_l1(mad * pred + mean, label)
-
-        res['loss'] += loss.item() * batch_size
+            #loss = loss_l1(mad * pred + mean, label)
+            loss_1 = loss_l1(mad * pred + mean, label[:, 0])
+            loss_2 = loss_l1(mad * pred + mean, label[:, 1])
+        #res['loss'] += loss.item() * batch_size
+        # Hack for multi-property
+        res['loss'] += min(loss_1.item() * batch_size, loss_2.item() * batch_size)
         res['counter'] += batch_size
-        res['loss_arr'].append(loss.item())
+        if partition == "train":
+            res['loss_arr'].append(loss.item())
+        else:
+            res['loss_arr'].append(min(loss_1.item(), loss_2.item()))
 
         prefix = ""
         if partition != 'train':
@@ -92,11 +99,12 @@ def train(model, epoch, loader, mean, mad, property, device, partition='train', 
             print(prefix + "Epoch %d \t Iteration %d \t loss %.4f" % (epoch, i, sum(res['loss_arr'][-10:])/len(res['loss_arr'][-10:])))
         if debug_break:
             break
+    wandb.log({'Average MAE': res['loss'] / res['counter']}, commit=True)
     return res['loss'] / res['counter']
 
 
-def test(model, epoch, loader, mean, mad, property, device, log_interval, debug_break=False):
-    return train(model, epoch, loader, mean, mad, property, device, partition='test', log_interval=log_interval, debug_break=debug_break)
+def test(model, epoch, loader, mean, mad, property, device, log_interval, debug_break=False, use_wandb=False, exp_name="multi_prop_test"):
+    return train(model, epoch, loader, mean, mad, property, device, partition='test', log_interval=log_interval, debug_break=debug_break, use_wandb=use_wandb, exp_name=exp_name)
 
 
 def get_model(args):

@@ -1,3 +1,4 @@
+import pdb
 import torch
 from torch.distributions.categorical import Categorical
 
@@ -16,6 +17,7 @@ def get_model(args, device, dataset_info, dataloader_train):
 
     prop_dist = None
     if len(args.conditioning) > 0:
+        breakpoint()
         prop_dist = DistributionProperty(dataloader_train, args.conditioning)
 
     if args.condition_time:
