@@ -2,11 +2,11 @@
 #SBATCH --partition=serc
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --time=12:00:00
+#SBATCH --time=1:00:00
 #SBATCH --gres=gpu:1
 
-if [ "$#" -ne 10 ]; then
-    echo "Usage: $0 <MODEL> <GUIDANCE_WEIGHT> <DROP_PROB> <DATASET_PORTION> <PROPERTY> <EPOCHS> <TEST_EPOCHS> <MODE> <BATCH_SIZE> <STABILITY_SAMPLES>"
+if [ "$#" -ne 11 ]; then
+    echo "Usage: $0 <MODEL> <GUIDANCE_WEIGHT> <DROP_PROB> <DATASET_PORTION> <PROPERTY> <EPOCHS> <TEST_EPOCHS> <MODE> <BATCH_SIZE> <STABILITY_SAMPLES> <EVAL_FLAG>"
     exit 1
 fi
 
