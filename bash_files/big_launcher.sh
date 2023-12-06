@@ -21,7 +21,7 @@ MODEL=$1
 GUIDANCE_WEIGHT=$2
 DROP_PROB=$3
 DATASET_PORTION=$4
-PROPERTY=$5
+PROPERTY_STRING=$5
 EPOCHS=$6
 TEST_EPOCHS=$7
 MODE=$8
@@ -38,6 +38,14 @@ STABILITY_SAMPLES=${10}
 
 # Constructing the experiment name by appending the model name
 EXP_NAME="${MODE}_${PROPERTY}_${MODEL}_${GUIDANCE_WEIGHT}_${DATASET_PORTION}_${EPOCHS}"
+
+if [[ "$MODE" == '5' || "$MODE" == '6' ]]; then
+    IFS=',' read -r -a PROPERTY <<< "$PROPERTY_STRING"
+    echo "Array elements: ${PROPERTY[@]}"
+else
+    PROPERTY=$PROPERTY_STRING
+    echo "Single value: $PROPERTY"
+fi
 
 # Your GPU job command(s) go here
 if [ "$MODE" == "1" ]; then
