@@ -67,7 +67,9 @@ parser.add_argument('--clip_grad', type=eval, default=True,
 parser.add_argument('--trace', type=str, default='hutch',
                     help='hutch | exact')
 # EGNN args -->
-parser.add_argument('--n_layers', type=int, default=6,
+parser.add_argument('--in_layers', type=int, default=1,
+                    help='number of layers in the encoder')
+parser.add_argument('--n_layers', type=int, default=9,
                     help='number of layers')
 parser.add_argument('--inv_sublayers', type=int, default=1,
                     help='number of layers')
