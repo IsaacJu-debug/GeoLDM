@@ -18,9 +18,9 @@ BATCH_SIZE="168"
 STABILITY_SAMPLES="500"
 EVAL_FLAG="1"
 
-PROPERTY="alpha,mu"
+PROPERTY="alpha"
 MODE="3"
-
+GUIDANCE_WEIGHT="0.5"
 for IN_LAYERS in 3 6 9; do
     for OUT_LAYERS in 3 6 9; do
         for ATTENTION in False True; do
