@@ -34,6 +34,11 @@ def get_model(args, device, dataset_info, dataloader_train):
         inv_sublayers=args.inv_sublayers, sin_embedding=args.sin_embedding,
         normalization_factor=args.normalization_factor, aggregation_method=args.aggregation_method)
 
+    if 'classifier_free_guidance' not in args:
+        args.classifier_free_guidance = False
+        args.gui9dance_weight = 0
+        args.class_drop_prob = 0
+
     if args.probabilistic_model == 'diffusion':
         vdm = EnVariationalDiffusion(
             dynamics=net_dynamics,
@@ -71,6 +76,11 @@ def get_autoencoder(args, device, dataset_info, dataloader_train):
     print('Autoencoder models are _not_ conditioned on time.')
         # dynamics_in_node_nf = in_node_nf
     
+    if 'encoder_layers' not in args:
+        print("Encoder Layers Missing")
+        args.encoder_layers = 1
+
+
     encoder = EGNN_encoder_QM9(
         in_node_nf=in_node_nf, context_node_nf=args.context_node_nf, out_node_nf=args.latent_nf,
         n_dims=3, device=device, hidden_nf=args.nf,
@@ -149,7 +159,12 @@ def get_latent_diffusion(args, device, dataset_info, dataloader_train):
         attention=args.attention, tanh=args.tanh, mode=args.model, norm_constant=args.norm_constant,
         inv_sublayers=args.inv_sublayers, sin_embedding=args.sin_embedding,
         normalization_factor=args.normalization_factor, aggregation_method=args.aggregation_method)
-
+    
+    if 'classifier_free_guidance' not in args:
+        args.classifier_free_guidance = False
+        args.guidance_weight = 0
+        args.class_drop_prob = 0
+    
     if args.probabilistic_model == 'diffusion':
         vdm = EnLatentDiffusion(
             vae=first_stage_model,

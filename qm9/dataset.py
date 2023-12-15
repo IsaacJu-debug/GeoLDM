@@ -13,7 +13,7 @@ def retrieve_dataloaders(cfg):
         num_workers = cfg.num_workers
         filter_n_atoms = cfg.filter_n_atoms
         if 'dataset_portion' not in cfg:
-            cfg['dataset_portion'] = 0.1
+            cfg.dataset_portion = 0.1
         # Initialize dataloader
         #pdb.set_trace()
         args = init_argparse('qm9', dataset_split=cfg.dataset_portion)
