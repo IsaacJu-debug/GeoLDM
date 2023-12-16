@@ -29,13 +29,13 @@ def check_mask_correct(variables, node_mask):
 
 def save_and_sample_chain(args, eval_args, device, flow,
                           n_tries, n_nodes, dataset_info, id_from=0,
-                          num_chains=100):
+                          num_chains=100, prop_dist=None):
 
     for i in range(num_chains):
         target_path = f'eval/chain_{i}/'
 
         one_hot, charges, x = sample_chain(
-            args, device, flow, n_tries, dataset_info)
+            args, device, flow, n_tries, dataset_info, prop_dist=prop_dist)
 
         vis.save_xyz_file(
             join(eval_args.model_path, target_path), one_hot, charges, x,
@@ -156,25 +156,25 @@ def main():
 
     flow.load_state_dict(flow_state_dict)
 
-    print('Sampling handful of molecules.')
-    sample_different_sizes_and_save(
-        args, eval_args, device, flow, nodes_dist,
-        dataset_info=dataset_info, n_samples=30, prop_dist=prop_dist)
+    # print('Sampling handful of molecules.')
+    # sample_different_sizes_and_save(
+    #     args, eval_args, device, flow, nodes_dist,
+    #     dataset_info=dataset_info, n_samples=30, prop_dist=prop_dist)
 
-    print('Sampling stable molecules.')
-    sample_only_stable_different_sizes_and_save(
-        args, eval_args, device, flow, nodes_dist,
-        dataset_info=dataset_info, n_samples=10, n_tries=2*10, prop_dist=prop_dist)
-    print('Visualizing molecules.')
-    vis.visualize(
-        join(eval_args.model_path, 'eval/molecules/'), dataset_info,
-        max_num=100, spheres_3d=True)
+    # print('Sampling stable molecules.')
+    # sample_only_stable_different_sizes_and_save(
+    #     args, eval_args, device, flow, nodes_dist,
+    #     dataset_info=dataset_info, n_samples=10, n_tries=2*10, prop_dist=prop_dist)
+    # print('Visualizing molecules.')
+    # vis.visualize(
+    #     join(eval_args.model_path, 'eval/molecules/'), dataset_info,
+    #     max_num=100, spheres_3d=True)
 
     print('Sampling visualization chain.')
     save_and_sample_chain(
         args, eval_args, device, flow,
         n_tries=eval_args.n_tries, n_nodes=eval_args.n_nodes,
-        dataset_info=dataset_info)
+        dataset_info=dataset_info, prop_dist=prop_dist)
 
 
 if __name__ == "__main__":
