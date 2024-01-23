@@ -343,3 +343,54 @@ class MLP(nn.Module):
             out = out + layer(F.relu(out))
         out = self.lin_final(F.relu(out)) + (out if self.residual_end else 0)
         return out
+    
+
+class SinusoidsEmbeddingNew(nn.Module):
+    def __init__(self, max_res=15., min_res=15. / 2000., div_factor=4):
+        super().__init__()
+        self.n_frequencies = int(math.log(max_res / min_res, div_factor)) + 1
+        self.frequencies = 2 * math.pi * div_factor ** torch.arange(self.n_frequencies)/max_res
+        self.dim = len(self.frequencies) * 2
+
+    def forward(self, x):
+        x = torch.sqrt(x + 1e-8)
+        emb = x * self.frequencies[None, :].to(x.device)
+        emb = torch.cat((emb.sin(), emb.cos()), dim=-1)
+        return emb.detach()
+
+
+def coord2diff(x, edge_index, norm_constant=1):
+    row, col = edge_index
+    coord_diff = x[row] - x[col]
+    radial = torch.sum((coord_diff) ** 2, 1).unsqueeze(1)
+    norm = torch.sqrt(radial + 1e-8)
+    coord_diff = coord_diff/(norm + norm_constant)
+    return radial, coord_diff
+
+
+def unsorted_segment_sum(data, segment_ids, num_segments, normalization_factor, aggregation_method: str):
+    """Custom PyTorch op to replicate TensorFlow's `unsorted_segment_sum`.
+        Normalization: 'sum' or 'mean'.
+    """
+    result_shape = (num_segments, data.size(1))
+    result = data.new_full(result_shape, 0)  # Init empty result tensor.
+    segment_ids = segment_ids.unsqueeze(-1).expand(-1, data.size(1))
+    result.scatter_add_(0, segment_ids, data)
+    if aggregation_method == 'sum':
+        result = result / normalization_factor
+
+    if aggregation_method == 'mean':
+        norm = data.new_zeros(result.shape)
+        norm.scatter_add_(0, segment_ids, data.new_ones(data.shape))
+        norm[norm == 0] = 1
+        result = result / norm
+    return result
+
+def unsorted_segment_mean(data, segment_ids, num_segments):
+    result_shape = (num_segments, data.size(1))
+    segment_ids = segment_ids.unsqueeze(-1).expand(-1, data.size(1))
+    result = data.new_full(result_shape, 0)  # Init empty result tensor.
+    count = data.new_full(result_shape, 0)
+    result.scatter_add_(0, segment_ids, data)
+    count.scatter_add_(0, segment_ids, torch.ones_like(data))
+    return result / count.clamp(min=1)

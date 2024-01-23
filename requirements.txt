@@ -59,7 +59,7 @@ protobuf==3.20.1
 psutil==5.9.0
 ptyprocess==0.7.0
 pure-eval==0.2.2
-pycairo==1.21.0
+# pycairo==1.21.0
 pycparser==2.21
 pygments==2.11.2
 pyopenssl==22.0.0

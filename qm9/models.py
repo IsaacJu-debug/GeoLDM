@@ -200,10 +200,10 @@ def get_optim(args, generative_model):
 
 class DistributionNodes:
     def __init__(self, histogram):
-
         self.n_nodes = []
         prob = []
         self.keys = {}
+
         for i, nodes in enumerate(histogram):
             self.n_nodes.append(nodes)
             self.keys[nodes] = i
@@ -211,7 +211,7 @@ class DistributionNodes:
         self.n_nodes = torch.tensor(self.n_nodes)
         prob = np.array(prob)
         prob = prob/np.sum(prob)
-
+        breakpoint()
         self.prob = torch.from_numpy(prob).float()
 
         entropy = torch.sum(self.prob * torch.log(self.prob + 1e-30))
@@ -267,6 +267,7 @@ class DistributionProperty:
             values_filtered = values[idxs]
             if len(values_filtered) > 0:
                 probs, params = self._create_prob_given_nodes(values_filtered)
+                print(f"n_nodes: {n_nodes}, probs: {probs}, params: {params}")
                 distribution[n_nodes] = {'probs': probs, 'params': params}
 
     def _create_prob_given_nodes(self, values):
@@ -295,6 +296,7 @@ class DistributionProperty:
     def sample(self, n_nodes=19):
         vals = []
         for prop in self.properties:
+            breakpoint()
             dist = self.distributions[prop][n_nodes]
             idx = dist['probs'].sample((1,))
             val = self._idx2value(idx, dist['params'], len(dist['probs'].probs))

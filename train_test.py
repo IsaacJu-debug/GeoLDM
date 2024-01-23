@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import wandb
 from equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
     assert_correctly_masked, sample_center_gravity_zero_gaussian_with_mask
@@ -197,12 +198,15 @@ def sample_different_sizes_and_save(model, nodes_dist, args, device, dataset_inf
 
 def analyze_and_save(epoch, model_sample, nodes_dist, args, device, dataset_info, prop_dist,
                      n_samples=1000, batch_size=100):
+    print(f"Number of samples: {n_samples}")
     print(f'Analyzing molecule stability at epoch {epoch}...')
     batch_size = min(batch_size, n_samples)
     assert n_samples % batch_size == 0
     molecules = {'one_hot': [], 'x': [], 'node_mask': []}
-    for i in range(int(n_samples/batch_size)):
+    for i in tqdm(range(int(n_samples / batch_size)), desc="Generating molecules"):
+        breakpoint()
         nodesxsample = nodes_dist.sample(batch_size)
+        print(nodesxsample)
         one_hot, charges, x, node_mask = sample(args, device, model_sample, dataset_info, prop_dist,
                                                 nodesxsample=nodesxsample)
 

@@ -11,7 +11,7 @@ from qm9.property_prediction.main_qm9_prop import test
 from qm9.property_prediction import main_qm9_prop
 from qm9.sampling import sample_chain, sample, sample_sweep_conditional
 import qm9.visualizer as vis
-
+import pdb
 
 def get_classifier(dir_path='', device='cpu'):
     with open(join(dir_path, 'args.pickle'), 'rb') as f:
@@ -76,6 +76,8 @@ class DiffusionDataloader:
 
     def sample(self):
         nodesxsample = self.nodes_dist.sample(self.batch_size)
+        breakpoint()
+        print('accessing this')
         context = self.prop_dist.sample_batch(nodesxsample).to(self.device)
         one_hot, charges, x, node_mask = sample(self.args_gen, self.device, self.model,
                                                 self.dataset_info, self.prop_dist, nodesxsample=nodesxsample,
