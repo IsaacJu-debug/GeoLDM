@@ -17,7 +17,7 @@ def get_model(args, device, dataset_info, dataloader_train):
 
     prop_dist = None
     if len(args.conditioning) > 0:
-        breakpoint()
+        # breakpoint()
         prop_dist = DistributionProperty(dataloader_train, args.conditioning)
 
     if args.condition_time:
@@ -211,7 +211,7 @@ class DistributionNodes:
         self.n_nodes = torch.tensor(self.n_nodes)
         prob = np.array(prob)
         prob = prob/np.sum(prob)
-        breakpoint()
+        # breakpoint()
         self.prob = torch.from_numpy(prob).float()
 
         entropy = torch.sum(self.prob * torch.log(self.prob + 1e-30))
@@ -296,7 +296,7 @@ class DistributionProperty:
     def sample(self, n_nodes=19):
         vals = []
         for prop in self.properties:
-            breakpoint()
+            # breakpoint()
             dist = self.distributions[prop][n_nodes]
             idx = dist['probs'].sample((1,))
             val = self._idx2value(idx, dist['params'], len(dist['probs'].probs))

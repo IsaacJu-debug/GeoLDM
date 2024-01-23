@@ -204,7 +204,7 @@ def analyze_and_save(epoch, model_sample, nodes_dist, args, device, dataset_info
     assert n_samples % batch_size == 0
     molecules = {'one_hot': [], 'x': [], 'node_mask': []}
     for i in tqdm(range(int(n_samples / batch_size)), desc="Generating molecules"):
-        breakpoint()
+        # breakpoint()
         nodesxsample = nodes_dist.sample(batch_size)
         print(nodesxsample)
         one_hot, charges, x, node_mask = sample(args, device, model_sample, dataset_info, prop_dist,

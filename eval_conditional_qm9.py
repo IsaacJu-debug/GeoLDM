@@ -76,7 +76,7 @@ class DiffusionDataloader:
 
     def sample(self):
         nodesxsample = self.nodes_dist.sample(self.batch_size)
-        breakpoint()
+        # breakpoint()
         print('accessing this')
         context = self.prop_dist.sample_batch(nodesxsample).to(self.device)
         one_hot, charges, x, node_mask = sample(self.args_gen, self.device, self.model,
