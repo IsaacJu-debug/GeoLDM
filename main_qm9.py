@@ -167,6 +167,8 @@ if args.resume is not None:
 
     with open(join(args.resume, 'args.pickle'), 'rb') as f:
         args = pickle.load(f)
+        args.dataset_portion *= 0.5
+        args.no_wandb = False
 
     args.resume = resume
     args.break_train_epoch = False
@@ -248,7 +250,7 @@ def check_mask_correct(variables, node_mask):
 
 def main():
     if args.resume is not None:
-        flow_state_dict = torch.load(join(args.resume, 'flow.npy'))
+        flow_state_dict = torch.load(join(args.resume, 'generative_model.npy'))
         optim_state_dict = torch.load(join(args.resume, 'optim.npy'))
         model.load_state_dict(flow_state_dict)
         optim.load_state_dict(optim_state_dict)

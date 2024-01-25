@@ -1,0 +1,5 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'token', 'env', 'server', 'verify', 'repo', 'pack')
+/atlas2/u/akshgarg/cfgdm/GeoLDM/qm9/models.py:286: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  probs = Categorical(torch.tensor(probs))
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]slurmstepd: error: *** JOB 7219292 ON atlas22 CANCELLED AT 2024-01-23T14:42:14 ***

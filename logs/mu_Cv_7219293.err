@@ -1,0 +1,26 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'token', 'verify', 'repo', 'env', 'pack', 'server')
+/atlas2/u/akshgarg/cfgdm/GeoLDM/qm9/models.py:286: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  probs = Categorical(torch.tensor(probs))
+/atlas/u/akshgarg/anaconda3_copy/envs/torch1/lib/python3.9/site-packages/torch/cuda/__init__.py:146: UserWarning: 
+NVIDIA RTX A4000 with CUDA capability sm_86 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_70.
+If you want to use the NVIDIA RTX A4000 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(incompatible_device_warn.format(device_name, capability, " ".join(arch_list), device_name))
+Traceback (most recent call last):
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/main_qm9.py", line 346, in <module>
+    main()
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/main_qm9.py", line 296, in main
+    train_epoch(args=args, loader=dataloaders['train'], epoch=epoch, model=model, model_dp=model_dp,
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/train_test.py", line 36, in train_epoch
+    x = remove_mean_with_mask(x, node_mask)
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/equivariant_diffusion/utils.py", line 33, in remove_mean_with_mask
+    masked_max_abs_value = (x * (1 - node_mask)).abs().sum().item()
+  File "/atlas/u/akshgarg/anaconda3_copy/envs/torch1/lib/python3.9/site-packages/torch/_tensor.py", line 32, in wrapped
+    return f(*args, **kwargs)
+  File "/atlas/u/akshgarg/anaconda3_copy/envs/torch1/lib/python3.9/site-packages/torch/_tensor.py", line 639, in __rsub__
+    return _C._VariableFunctions.rsub(self, other)
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.

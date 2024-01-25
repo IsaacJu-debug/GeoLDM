@@ -1,0 +1,8 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'pack', 'env', 'verify', 'repo', 'token', 'server')
+Traceback (most recent call last):
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/main_qm9.py", line 7, in <module>
+    import utils
+  File "/atlas2/u/akshgarg/cfgdm/GeoLDM/utils.py", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'

@@ -1,0 +1,18 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'env', 'repo', 'verify', 'token', 'server', 'pack')
+wandb: Currently logged in as: akshgarg (graph-ccs). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.13.4
+wandb: Run data is saved locally in /atlas2/u/akshgarg/cfgdm/GeoLDM/wandb/run-20240123_141006-1xaznfrv
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run single_cfg_alpha_mu_log_qm9_second_half_egnn_dynamics_splitRatio_0.5_guidence_weights_0.25
+wandb: ⭐️ View project at https://wandb.ai/graph-ccs/e3_diffusion_qm9
+wandb: 🚀 View run at https://wandb.ai/graph-ccs/e3_diffusion_qm9/runs/1xaznfrv
+/atlas2/u/akshgarg/cfgdm/GeoLDM/qm9/models.py:286: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  probs = Categorical(torch.tensor(probs))
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]Generating molecules:  20%|██        | 1/5 [04:01<16:07, 241.83s/it]Generating molecules:  40%|████      | 2/5 [08:04<12:07, 242.52s/it]Generating molecules:  60%|██████    | 3/5 [12:08<08:05, 242.84s/it]Generating molecules:  80%|████████  | 4/5 [16:11<04:03, 243.07s/it]Generating molecules: 100%|██████████| 5/5 [20:14<00:00, 243.14s/it]Generating molecules: 100%|██████████| 5/5 [20:14<00:00, 242.95s/it]
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]Generating molecules:  20%|██        | 1/5 [04:01<16:06, 241.52s/it]Generating molecules:  40%|████      | 2/5 [08:03<12:05, 241.97s/it]Generating molecules:  60%|██████    | 3/5 [12:06<08:04, 242.14s/it]Generating molecules:  80%|████████  | 4/5 [16:08<04:02, 242.25s/it]Generating molecules: 100%|██████████| 5/5 [20:11<00:00, 242.34s/it]Generating molecules: 100%|██████████| 5/5 [20:11<00:00, 242.21s/it]
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]Generating molecules:  20%|██        | 1/5 [04:04<16:19, 244.86s/it]Generating molecules:  40%|████      | 2/5 [08:10<12:15, 245.19s/it]Generating molecules:  60%|██████    | 3/5 [12:15<08:10, 245.37s/it]Generating molecules:  80%|████████  | 4/5 [16:21<04:05, 245.48s/it]Generating molecules: 100%|██████████| 5/5 [20:27<00:00, 245.51s/it]Generating molecules: 100%|██████████| 5/5 [20:27<00:00, 245.42s/it]
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]Generating molecules:  20%|██        | 1/5 [04:03<16:14, 243.55s/it]Generating molecules:  40%|████      | 2/5 [08:07<12:11, 243.88s/it]Generating molecules:  60%|██████    | 3/5 [12:11<08:08, 244.07s/it]Generating molecules:  80%|████████  | 4/5 [16:16<04:04, 244.13s/it]Generating molecules: 100%|██████████| 5/5 [20:20<00:00, 244.21s/it]Generating molecules: 100%|██████████| 5/5 [20:20<00:00, 244.10s/it]
+slurmstepd: error: *** JOB 7219262 ON atlas16 CANCELLED AT 2024-01-23T23:36:28 ***

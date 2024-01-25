@@ -1,0 +1,5 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'pack', 'server', 'env', 'verify', 'repo', 'token')
+slurmstepd: error: *** JOB 7218089 ON atlas8 CANCELLED AT 2024-01-23T23:36:28 ***
+slurmstepd: error: *** JOB 7218089 STEPD TERMINATED ON atlas8 AT 2024-01-23T23:37:28 DUE TO JOB NOT ENDING WITH SIGNALS ***
+slurmstepd: error: Unable to destroy container 483725 in cgroup plugin, giving up after 63 sec

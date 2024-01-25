@@ -1,0 +1,15 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'activate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'repo', 'env', 'verify', 'pack', 'token', 'server')
+wandb: Currently logged in as: akshgarg (graph-ccs). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.13.4
+wandb: Run data is saved locally in /atlas2/u/akshgarg/cfgdm/GeoLDM/wandb/run-20240123_011146-2rvl7v70
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run single_cfg_mu_qm9_second_half_egnn_dynamics_splitRatio_0.5_guidence_weights_0.25
+wandb: ⭐️ View project at https://wandb.ai/graph-ccs/e3_diffusion_qm9
+wandb: 🚀 View run at https://wandb.ai/graph-ccs/e3_diffusion_qm9/runs/2rvl7v70
+/atlas2/u/akshgarg/cfgdm/GeoLDM/qm9/models.py:286: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  probs = Categorical(torch.tensor(probs))
+Generating molecules:   0%|          | 0/5 [00:00<?, ?it/s]Generating molecules:  20%|██        | 1/5 [02:43<10:52, 163.12s/it]Generating molecules:  40%|████      | 2/5 [05:27<08:11, 163.84s/it]Generating molecules:  60%|██████    | 3/5 [08:11<05:28, 164.14s/it]Generating molecules:  80%|████████  | 4/5 [10:56<02:44, 164.22s/it]Generating molecules: 100%|██████████| 5/5 [13:40<00:00, 164.27s/it]Generating molecules: 100%|██████████| 5/5 [13:40<00:00, 164.13s/it]
+slurmstepd: error: *** JOB 7218109 ON atlas21 CANCELLED AT 2024-01-23T01:34:08 ***
